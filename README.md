@@ -11,10 +11,13 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 - In the example we program a classic “Hello World!” endpoint (RESTful) that can be accessed from any browser. 
 - The example also illustrates how to pass parameters to the server via URL (query string).
 - The parameter is used to produce the output view shown in the web browser.  
+- To execute the example:
+   - ./mvnw spring-boot:run (GNU/Linux)
+   - mvnw spring-boot:run (Windows)
 
-<p align=center>http://localhost:8080/hello (outputs Hello World!)</p>
-
-<p align=center>http://localhost:8080/hello<strong>?name=Pagliares</strong> (outputs Hello Pagliares! )</p>
+- To test the example:
+   - <p>http://localhost:8080/hello (outputs Hello World!)</p>
+   - <p>http://localhost:8080/hello<strong>?name=Pagliares</strong> (outputs Hello Pagliares! )</p>
 
 <pre>
 <strong>@SpringBootApplication</strong>
