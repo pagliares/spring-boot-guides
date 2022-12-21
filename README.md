@@ -16,3 +16,18 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 
 <p align=center>http://localhost:8080/hello<strong>?name=Pagliares</strong> (outputs Hello Pagliares! )</p>
 
+<pre>
+<strong>@SpringBootApplication</strong>
+<strong>@RestController</strong>
+public class DemoApplication {
+
+   public static void main(String[] args) {
+      <strong>SpringApplication.run(DemoApplication.class, args)</strong>;
+   }
+
+   <strong>@GetMapping("/hello")</strong>
+   public String hello(<strong>@RequestParam(value = "name", defaultValue = "World"</strong>) String name) {
+      return String.format("Hello %s!", name);
+   }
+}
+</pre>
