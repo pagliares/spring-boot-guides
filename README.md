@@ -44,9 +44,11 @@ public class DemoApplication {
 - This example includes a web controller for a simple web application (HelloController) that outputs HelloWorld when requested from the the root of the application / 
 - URLs used in this example:
 
-<p> http://localhost:8080/ </p>  
-<p>http://localhost:8080/actuator/health produces<p>
-<p>http://localhost:8080/actuator produces </p>
+	<p>http://localhost:8080/ </p>  
+	<p>http://localhost:8080/actuator/health <p>
+	<p>http://localhost:8080/actuator </p>
+
+- We can use a web browser or the command-line curl utility to test our endpoints. 
 
 - This example also evolves the simple application class created by the Spring Initializr.  
 
@@ -78,18 +80,17 @@ public class Application {
 	}
  </pre>
 
-- The CommandLineRunner method marked as a @Bean runs on start up. It retrieves all the beans that were created by your application or that were automatically added by Spring Boot. It sorts them and prints them out (Notice that the helloController we created is on the list)
-
-- We can also use curl to test our endpoints. 
- 
+- The CommandLineRunner method marked as a @Bean runs on start up. It retrieves all the beans that were created by your application or that were automatically added by Spring Boot. It sorts them and prints them out (Notice that the helloController we created is on the list) 
 - The example also demonstrates how we can include unit and integration tests in a Spring Boot application.
 - If you use Maven, add the following to your pom.xml file to enable automated tests:
 
+<pre>
 <dependency>
 	<groupId>org.springframework.boot</groupId>
 	<artifactId>spring-boot-starter-test</artifactId>
 	<scope>test</scope>
 </dependency>
+</pre>
 
 
 - The example includes a simple unit test that mocks the servlet request and response by calling your endpoint (HelloController). We use MockMvc that comes from Spring Test and lets us send HTTP requests into the DispatcherServlet and make assertions about the result. 
@@ -115,32 +116,19 @@ public class HelloControllerIT {
 
 - Finnaly, the example illustrates that we can add production grade services (management services) to our Spring Boot application to, among other things, monitor the status of our web application on production environments.
 
-- To enable management services. Add it to maven or Gradle
+- To enable management services. Add it to Maven
 
-Gradle:
+<p><dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency></p>
 
-implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-Maven
+- Accessing the management services with http://localhost:8080/actuator/health produces {"status":"UP"}
 
-<dependency>
-	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-starter-actuator</artifactId>
-</dependency>
-
-- To access the management services
-
-<p>http://localhost:8080/actuator/health produces<p>
-
-{"status":"UP"}
-
-<p>http://localhost:8080/actuator produces </p>
+- Accessing the management services with http://localhost:8080/actuator produces
 
 <p>{"_links":{"self":{"href":"http://localhost:8080/actuator","templated":false},"health-path":{"href":"http://localhost:8080/actuator/health/{*path}","templated":true},"health":{"href":"http://localhost:8080/actuator/health","templated":false}}}</p>
-
-- Alternatively, you can use curl on command-line:
-
-<p>$ curl localhost:8080/actuator/health</p>
 
  - Refer to https://spring.io/guides/gs/spring-boot if you are interested on more information about the HelloController example, such as Jar and Groovy language Support.
 
