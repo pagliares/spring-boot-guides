@@ -35,7 +35,7 @@ public class DemoApplication {
 }
 </pre>
 
-### 02 - spring-boot
+### 03 - spring-boot
 
 - This example builds a simple web application with Spring Boot and add some useful monitoring services to it.
 - The project can be created by visiting Spring Initializr, filling in your project details, picking your options, and downloading a bundled up project as a zip file. I added the Spring Web Dependency.
