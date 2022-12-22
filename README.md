@@ -38,10 +38,16 @@ public class DemoApplication {
 ### 02 - spring-boot
 
 - This example builds a simple web application with Spring Boot and add some useful monitoring services to it.
-- The initial project can be created by visiting Spring Initializr, filling in your project details, picking your options, and downloading a bundled up project as a zip file. I added the Spring Web Dependency.
+- The project can be created by visiting Spring Initializr, filling in your project details, picking your options, and downloading a bundled up project as a zip file. I added the Spring Web Dependency.
 - If your IDE has the Spring Initializr integration, you can complete this process from your IDE.
  - Spring Web allows build web, including RESTful, applications using Spring MVC. Spring web uses Apache Tomcat as the default embedded container. 
 - This example includes a web controller for a simple web application (HelloController) that outputs HelloWorld when requested from the the root of the application / 
+- URLs used in this example:
+
+<p> http://localhost:8080/ </p>  
+<p>http://localhost:8080/actuator/health produces<p>
+<p>http://localhost:8080/actuator produces </p>
+
 - This example also evolves the simple application class created by the Spring Initializr.  
 
 <pre>
@@ -136,6 +142,6 @@ Maven
 
 <p>$ curl localhost:8080/actuator/health</p>
 
- - Refer to https://spring.io/guides/gs/spring-boot/#initial if you are interested on more information about the HelloController example, such as Jar and Groovy language Support.
+ - Refer to https://spring.io/guides/gs/spring-boot if you are interested on more information about the HelloController example, such as Jar and Groovy language Support.
 
 
