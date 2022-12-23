@@ -35,6 +35,40 @@ public class DemoApplication {
 }
 </pre>
 
+### 02 - command-line-spring-boot
+
+- In addition to web applications, we can use spring boot to develop command-line programs.
+- This example shows how to create a simple command line application in Spring Boot by implementing the interface CommandLineRunner (in the next example we will provide an alternative implementation that uses Java SE 8 lambdas).
+- CommandLineRunner is an interface used to indicate that a bean should run when it is contained within a SpringApplication. 
+- The overriden run() method of the CommandLineRunner will be executed after the application starts.
+- One common use case of CommandLineRunner is to load some static data at application startup.  
+- The example also demonstrates how we can inject a bean ApplicationContext with the annotation @Autowired
+
+<pre>
+@SpringBootApplication
+public class CommandLineSpringBootApplication <strong>implements CommandLineRunner</strong> {
+	<strong>@Autowired</strong>
+	private ApplicationContext ctx;
+
+	public static void main(String[] args) {
+		SpringApplication.run(CommandLineSpringBootApplication.class, args);
+	}
+
+	@Override
+	<strong>public void run(String... args) throws Exception</strong> { 
+		System.out.println("Hello, cruel Spring Boot command-line world!");
+		System.out.println("Let's inspect the beans provided by Spring Boot:");
+
+		String[] beanNames = <strong>ctx.getBeanDefinitionNames()</strong>;
+		Arrays.sort(beanNames);
+		for (String beanName : beanNames) {
+			System.out.println(beanName);
+		}
+	}
+}
+
+</pre>
+
 ### 03 - spring-boot
 
 - This example builds a simple web application with Spring Boot and add some useful monitoring services to it.
