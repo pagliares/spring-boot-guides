@@ -172,3 +172,7 @@ public class HelloControllerIT {
  - Refer to https://spring.io/guides/gs/spring-boot if you are interested on more information about the HelloController example, such as Jar and Groovy language Support.
 
 
+### 04 - accessing-data-mysql
+
+- This example demonstrates how to develop a Spring application that is bound to a MySQL database and is ready for production.
+
