@@ -176,3 +176,84 @@ public class HelloControllerIT {
 
 - This example demonstrates how to develop a Spring application that is bound to a MySQL database and is ready for production.
 
+### 05 - relational-data-access
+
+- This example demonstrates the process of accessing relational data with Spring.
+- You will build an application that uses Spring’s JdbcTemplate to access data stored in a relational database.
+- The project is a spring-boot project with the dependencies JDBC API and H2 Database.
+- In this example, we created the project with IntelliJ assistant (that integrates with Spring Initializr).
+- The example is a command-line application with Spring Boot (the RelationalDataAccessApplication class implements Spring Boot’s CommandLineRunner, which means it will execute the run() method after the application context is loaded).
+
+<pre>
+@SpringBootApplication
+public class RelationalDataAccessApplication <strong>implements CommandLineRunner</strong> {
+  ...
+  @Override
+  public void <strong>run(String... strings) throws Exception</strong> {
+     ...
+  }
+   ...
+}
+</pre>
+
+- A simple customer object is used to demonstrate persistence features with JdbcTemplate
+- The example uses a Spring template class called JdbcTemplate that makes it easy to work with SQL relational databases and JDBC.
+- The example includes a class (RelationalDataAccessApplication) that can store and retrieve data over JDBC.
+- Instead of using System.out.print statements to print messages to the console, we use sl4j (already included with Spring Boot) to manage all messages printed to the console (use a log frameworks has several advantages over System.out.print statements (for example, allows define message levels and redirectig output for a file instead of console, etc).
+
+<pre>
+@SpringBootApplication
+public class RelationalDataAccessApplication implements CommandLineRunner {
+   ...
+   private static final <strong>Logger log = LoggerFactory.getLogger(RelationalDataAccessApplication.class)</strong>;
+   ...
+   <strong>log.info("Creating tables")</strong>;
+   ...
+}
+</pre>
+
+- Spring Boot supports H2 (an in-memory relational database engine) and automatically creates a connection to it. Because we use spring-jdbc, Spring Boot automatically creates a JdbcTemplate that is automatically injected in the code.
+
+<pre>
+   @SpringBootApplication
+   public class RelationalDataAccessApplication implements CommandLineRunner {
+      ...
+      <strong>@Autowired</strong>
+      JdbcTemplate jdbcTemplate;
+       ...
+  }
+</pre>
+
+- The method execute of JdbcTemplate can be used, for instance, to execute drop table e create tabel SQL DDL statements.
+
+<pre>
+jdbcTemplate.execute("DROP TABLE customers IF EXISTS");
+jdbcTemplate.execute("CREATE TABLE customers(id ENTITY, first_name VARCHAR(255), last_name VARCHAR(255))");
+</pre>
+
+- For single insert statements, the insert method of JdbcTemplate is good, However, for multiple inserts, it is better to use batchUpdate. Suppose splitUpNames is a list of array objects that contains on each object of the array, the first name and the last name of a customer. In this scenario, multiple insertions can be done with just one statement.
+     
+<pre>
+ jdbcTemplate.batchUpdate("INSERT INTO customers(first_name, last_name) VALUES (?,?)", splitUpNames);
+</pre>
+
+- The example demonstrates the use of the method query of the object JdbcTemplate in order to retrieve from the database all customers with firstname equals to 'Josh'.
+
+- The example takes a list of strings and, by using Java 8 streams, split them into firstname/lastname pairs in a Java array.
+- It is a good practice to use ? for arguments in a SQL Query to avoid SQL injection attacks by instructing JDBC to bind variables.
+- The example uses the query method to search your table for records that match the criteria. You again use the ? arguments to create parameters for the query, passing in the actual values when you make the call. The last argument is a Java 8 lambda that is used to convert each result row into a new Customer object.
+
+<pre>
+log.info("Querying for customer records where first_name = 'Josh':");
+        <strong>jdbcTemplate.query</strong>(
+                "SELECT id, first_name, last_name FROM customers WHERE first_name = ?",
+                new Object[] { "Josh" },
+                (rs, rowNum) -> new Customer(rs.getLong("id"),
+                        rs.getString("first_name"), rs.getString("last_name"))
+         ).forEach(customer -> log.info(customer.toString()));
+</pre>
+
+- You can run the application by using ./mvnw spring-boot:run. 
+- Alternatively, you can build the JAR file with ./mvnw clean package and then run the JAR file, as follows:
+
+<pre>java -jar target/gs-relational-data-access-0.1.0.jar</pre>
