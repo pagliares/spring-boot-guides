@@ -178,6 +178,7 @@ public class HelloControllerIT {
 
 ### 05 - relational-data-access
 
+- Refer to https://spring.io/guides/gs/relational-data-access/ if you are interested on more information about this example.
 - This example demonstrates the process of accessing relational data with Spring.
 - You will build an application that uses Spring’s JdbcTemplate to access data stored in a relational database.
 - The project is a spring-boot project with the dependencies JDBC API and H2 Database.
@@ -257,3 +258,6 @@ log.info("Querying for customer records where first_name = 'Josh':");
 - Alternatively, you can build the JAR file with ./mvnw clean package and then run the JAR file, as follows:
 
 <pre>java -jar target/gs-relational-data-access-0.1.0.jar</pre>
+
+<p align="center"> <img src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/Output.png" width=750 height="286" alt="Example output" title="Example output to the console"></p>
+
