@@ -261,3 +261,73 @@ log.info("Querying for customer records where first_name = 'Josh':");
 
 <p align="center"> <img src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/Output.png" width=750 height="286" alt="Example output" title="Example output to the console"></p>
 
+
+### 06 - managing-transactions
+
+- Refer to https://spring.io/guides/gs/managing-transactions/ if you are interested on more information about this example.
+- Before trying this example, we suggest reviewing the use of transactions with JDBC (see example 20 - TransactionManagement in the repository located at: https://github.com/pagliares/jdbc-hands-on)
+- The example (managing-transactions) in this repo walks you through the process of wrapping database operations with non-intrusive transactions.
+- You will build a simple JDBC application wherein you make database operations transactional without having to write specialized JDBC code.
+- The examples illustrates a BookingService class to create a JDBC-based service that books people into the system by name.
+- This method is tagged with <strong>@Transactional</strong>, meaning that any failure causes the entire operation to roll back to its previous state and to re-throw the original exception. This means that none of the people are added to BOOKINGS if one person fails to be added.
+- You also have a findAllBookings method to query the database. Each row fetched from the database is converted into a String, and all the rows are assembled into a List.
+
+<pre>
+@Component
+public class BookingService {
+    …
+    private final JdbcTemplate jdbcTemplate;
+    …
+    …
+    <strong>@Transactional</strong>
+    public void book(String... persons) {
+        for (String person : persons) {
+            logger.info("Booking " + person + " in a seat...");
+            <strong>jdbcTemplate.update("insert into BOOKINGS(FIRST_NAME) values (?)", person);</strong>
+        }
+    }
+
+   
+    public List<String> findAllBookings() {
+        <strong>return jdbcTemplate.query("select FIRST_NAME from BOOKINGS",
+                (rs, rowNum) -> rs.getString("FIRST_NAME"));</strong>
+    }
+
+}
+</pre>
+
+- Notice this example application actually has zero configuration. Spring Boot detects <strong>spring-jdbc</strong> and <strong>h2</strong> on the classpath and automatically creates a DataSource and a JdbcTemplate for you. Because this infrastructure is now available and you have no dedicated configuration, a DataSourceTransactionManager is also created for you. This is the component that intercepts the method annotated with <strong>@Transactional</strong> (for example, the book method on BookingService). The BookingService is detected by classpath scanning.
+
+- Another Spring Boot feature demonstrated in this example is the ability to initialize the schema on startup. The following file (from <strong>src/main/resources/schema.sql</strong>) defines the database schema:
+
+<pre>
+drop table BOOKINGS if exists;
+create table BOOKINGS(ID serial, FIRST_NAME varchar(5) NOT NULL);
+</pre>
+
+- There is also a CommandLineRunner that injects the BookingService and performs some database transactions on its run method. 
+
+<pre>
+<strong>@Component</strong>
+class AppRunner <strong>implements CommandLineRunner</strong> {
+    ...
+    private final BookingService bookingService;
+
+    public AppRunner(<strong>BookingService bookingService</strong>) {
+        this.bookingService = bookingService;
+    }
+    
+    ...
+    
+    @Override
+    public void <strong>run(String... args) throws Exception</strong> {
+        bookingService.book("Alice", "Bob", "Carol");
+        Assert.isTrue(bookingService.findAllBookings().size() == 3,
+                "First booking should work with no problem");
+        logger.info("Alice, Bob and Carol have been booked");
+
+</pre>
+
+- If you use Maven, you can run the application by using <strong>./mvnw spring-boot:run</strong>. Alternatively, you can build the JAR file with <strong>./mvnw clean package</strong> and then run the JAR file, as follows:
+
+<pre>java -jar target/gs-managing-transactions-0.1.0.jar</pre>
