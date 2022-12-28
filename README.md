@@ -331,3 +331,85 @@ class AppRunner <strong>implements CommandLineRunner</strong> {
 - If you use Maven, you can run the application by using <strong>./mvnw spring-boot:run</strong>. Alternatively, you can build the JAR file with <strong>./mvnw clean package</strong> and then run the JAR file, as follows:
 
 <pre>java -jar target/gs-managing-transactions-0.1.0.jar</pre>
+
+### 07 - accessing-data-jpa 
+
+- Refer to https://spring.io/guides/gs/accessing-data-jpa/ if you are interested on more information about this example.
+- This example walks you through the process of building an application that uses <strong>Spring Data JPA</strong> to store and retrieve data in a relational database.
+- This example is a simple application that uses Spring Data JPA to save objects to and fetch them from a database, all without writing a concrete repository implementation.
+- You will build an application that stores <strong>Customer POJOs (Plain Old Java Objects)</strong> in a memory-based database.
+- In this example, you store Customer objects, each annotated as a <strong>JPA entity</strong>. 
+- You also have two constructors in Customer entity. The default constructor exists only for the sake of JPA. You do not use it directly, so it is designated as protected.
+- <strong>Spring Data JPA</strong> focuses on using JPA to store data in a relational database. Its most compelling feature is the ability to <strong>create repository implementations automatically, at runtime, from a repository interface</strong>.
+
+<pre>
+public <strong>interface</strong> CustomerRepository <strong>extends CrudRepository<Customer, Long></strong> {
+    List<Customer> findByLastName(String lastName);
+    Customer findById(long id);
+}
+</pre>
+
+- CustomerRepository extends the CrudRepository interface. The type of entity and ID that it works with, Customer and Long, are specified in the generic parameters on CrudRepository.
+- By extending CrudRepository, CustomerRepository inherits several methods for working with Customer persistence, including <strong>methods for saving, deleting, and finding Customer entities</strong>.
+- <strong>Spring Data JPA</strong> also lets you define other query methods by declaring their method signature. For example, CustomerRepository includes the <strong>findByLastName()</strong> method.
+- In a typical Java application, you might expect to write a class that implements CustomerRepository. However, that is what makes Spring Data JPA so powerful: <strong>You need not write an implementation of the repository interface</strong>. <strong>Spring Data JPA creates an implementation</strong> when you run the application.
+- To get output (to the console, in this example), you need to set up a <strong>logger</strong>. Then you need to set up some data and use it to generate output. 
+- The <strong>AccessingDataJpaApplication</strong> class includes a demo() method that puts the CustomerRepository through a few tests:
+	- It fetches the CustomerRepository from the Spring application context (not shown explicitly in the code)
+	- It saves a handful of Customer objects, demonstrating the <strong>save()</strong> method and setting up some data to work with. 
+        - It calls <strong>findAll()</strong> to fetch all Customer objects from the database. 
+        - It calls <strong>findById()</strong> to fetch a single Customer by its ID. 
+        - It calls <strong>findByLastName()</strong> to find all customers whose last name is "Bauer". 
+- The <strong>demo()</strong> method returns a <strong>CommandLineRunner bean</strong> that automatically runs the code when the application launches.
+
+<pre>
+<strong>@Bean</strong>
+public <strong>CommandLineRunner</strong> demo(CustomerRepository repository) {
+   return (args) -> {
+      <strong>// save a few customers</strong>
+      log.info("Saving few customers with save method of CustomerRepository:");
+
+      <strong>repository.save(new Customer("Jack", "Bauer"));</strong>
+      repository.save(new Customer("Chloe", "O'Brian"));
+      repository.save(new Customer("Kim", "Bauer"));
+      repository.save(new Customer("David", "Palmer"));
+      repository.save(new Customer("Michelle", "Dessler"));
+
+       <strong>// fetch all customers</strong>
+       log.info("Customers found with findAll():");
+       log.info("-------------------------------");
+       for (Customer customer : <strong>repository.findAll()</strong>) {
+          log.info(customer.toString());
+       }
+       log.info("");
+
+        <strong>// fetch an individual customer by ID</strong>
+        Customer customer = <strong>repository.findById(1L)</strong>;
+
+        log.info("Customer found with findById(1L):");
+        log.info("--------------------------------");
+        log.info(customer.toString());
+        log.info("");
+
+         <strong>// fetch customers by last name - Using lambda - Java SE 8</strong>
+         log.info("Customer found with findByLastName('Bauer'):");
+         log.info("--------------------------------------------");
+         <strong>repository.findByLastName("Bauer")</strong>.forEach(bauer -> {
+           log.info(bauer.toString());
+         });
+
+         <strong>// fetch customers by last name - loop for, Pre-Java SE 8</strong>
+         // for (Customer bauer : <strong>repository.findByLastName("Bauer")</strong>) {
+         //    log.info(bauer.toString());
+         // }
+         log.info("");
+        };
+    }
+</pre>
+
+- <strong>By default, Spring Boot enables JPA repository support and looks in the package (and its subpackages) where @SpringBootApplication is located</strong>. If your configuration has JPA repository interface definitions located in a package that is not visible, you can point out alternate packages by using @EnableJpaRepositories and its type-safe basePackageClasses=MyRepository.class parameter.
+
+
+
+
+
