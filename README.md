@@ -412,27 +412,41 @@ public <strong>CommandLineRunner</strong> demo(CustomerRepository repository) {
 ### 08 - accessing-data-rest
 
 - Refer to https://spring.io/guides/gs/accessing-data-rest/ if you are interested on more information about this example.
-- This example walks you through the process of creating an application that accesses relational JPA-based backend data through a hypermedia-based RESTful front end.
-- You will build a Spring application that lets you create and retrieve Person objects stored in a database by using Spring Data REST. Spring Data REST takes the features of Spring HATEOAS and Spring Data JPA and automatically combines them together.
-- Spring Data REST also supports Spring Data Neo4j, Spring Data Gemfire, and Spring Data MongoDB as backend data stores, but those are not part of this example.
-- Dependencies: Rest Repositories, Spring Data JPA, and H2 Database.
+- This example walks you through the process of creating an application that accesses relational <strong>JPA-based backend data</strong> through a <strong>hypermedia-based RESTful front end</strong>.
+- You will build a Spring application that lets you create and retrieve <strong>Person objects</strong> stored in a database by using <strong>Spring Data REST</strong>. <strong>Spring Data REST</strong> takes the features of <strong>Spring HATEOAS</strong> and <strong>Spring Data JPA</strong> and automatically combines them together.
+- <strong>Spring Data REST</strong> also supports <strong>Spring Data Neo4j</strong>, <strong>Spring Data Gemfire</strong>, and <strong>Spring Data MongoDB</strong> as <strong>backend data stores</strong>, but those are not part of this example.
+- <strong>Dependencies: Rest Repositories, Spring Data JPA, and H2 Database</strong>.
 - The example uses a domain object to present a person
-- The Person object has a first name and a last name. (There is also an ID object that is configured to be automatically generated, so you need not deal with that.)
-- The example uses a repository (interface PersonRepository).
-- This repository is an interface that lets you perform various operations involving Person objects. It gets these operations by extending the PagingAndSortingRepository interface that is defined in Spring Data Commons.
-- At runtime, Spring Data REST automatically creates an implementation of this interface. Then it uses the @RepositoryRestResource annotation to direct Spring MVC to create RESTful endpoints at /people.
-- @RepositoryRestResource is not required for a repository to be exported. It is used only to change the export details, such as using /people instead of the default value of /persons.
-- Here you have also defined a custom query to retrieve a list of Person objects based on the lastName.
-- Spring Boot automatically spins up Spring Data JPA to create a concrete implementation of the PersonRepository and configure it to talk to a back end in-memory database by using JPA.
-- Spring Data REST builds on top of Spring MVC. It creates a collection of Spring MVC controllers, JSON converters, and other beans to provide a RESTful front end. These components link up to the Spring Data JPA backend. When you use Spring Boot, this is all autoconfigured.
-- Now that the application is running, you can test it. You can use any REST client you wish. The following examples use the *nix tool, curl.
-- First you want to see the top level service. The following example shows how to do so (There is a people link located at http://localhost:8080/people. It has some options, such as ?page, ?size, and ?sort)
+- At the end of this example, student will understand how to make a domain object accessible to the world through HTTP and how to perfom CRUD operation on it by using a command-line tool. 
+- The examples will enable the student to try communicating with the RESTful endpoints by using the URLs
+	- $ curl http://localhost:8080
+	- $ curl http://localhost:8080/people
+	- $ curl -i -H "Content-Type:application/json" -d '{"firstName": "Frodo", "lastName": "Baggins"}' http://localhost:8080/people
+	- $ curl http://localhost:8080/people
+	- $ curl http://localhost:8080/people/1
+	- $ curl http://localhost:8080/people/search
+	- $ curl http://localhost:8080/people/search/findByLastName?name=Baggins
+	- $ curl -X PUT -H "Content-Type:application/json" -d '{"firstName": "Bilbo", "lastName": "Baggins"}' http://localhost:8080/people/1
+	- $ curl -X PATCH -H "Content-Type:application/json" -d '{"firstName": "Bilbo Jr."}' http://localhost:8080/people/1
+	- $ curl -X DELETE http://localhost:8080/people/1
+
+- The Person object has a first name and a last name. There is also an ID object that is configured to be automatically generated, so you need not deal with that.
+- The example uses a repository (<strong>interface PersonRepository</strong>).
+- This repository is an interface that lets you perform various operations involving Person objects. It gets these operations by extending the <strong>PagingAndSortingRepository interface</strong> that is defined in <strong>Spring Data Commons</strong>.
+- At runtime, <strong>Spring Data REST</strong> automatically creates an implementation of this interface. Then it uses the <strong>@RepositoryRestResource</strong> annotation to direct Spring MVC to create RESTful endpoints at <strong>/people</strong>.
+- <strong>@RepositoryRestResource</strong> is not required for a repository to be exported. It is used only to change the export details, such as using <strong>/people</strong> instead of the default value of </strong>/persons</strong>.
+- The <strong>Repository</strong> defines a <strong>custom query</strong> to retrieve a list of Person objects based on the lastName.
+- Spring Boot automatically spins up <strong>Spring Data JPA</strong> to create a concrete implementation of the <strong>PersonRepository</strong> and configure it to talk to a <strong>back end in-memory database</strong> by using JPA.
+- <strong>Spring Data REST</strong> builds on top of <strong>Spring MVC</strong>. It creates a collection of <strong>Spring MVC controllers</strong>, <strong>JSON converters</strong>, and other beans to provide a <strong>RESTful front end</strong>. These components link up to the <strong>Spring Data JPA backend</strong>. When you use Spring Boot, this is all autoconfigured.
+- You can use any REST client you wish to test the example. The following examples use the *nix tool, <strong>curl</strong>:
+- The following example shows how to do see the top level service (Notice in the output that there is a <strong>people link</strong> located at <strong>http://localhost:8080/people</strong>. It has some options, such as <strong>?page, ?size, and ?sort</strong>
+
 <pre>
 <strong>$ curl http://localhost:8080</strong>
 {
   "_links" : {
     "people" : {
-      "href" : "http://localhost:8080/people{?page,size,sort}",
+      "href" : <strong>"http://localhost:8080/people{?page,size,sort}"</strong>,
       "templated" : true
     }
   }
@@ -440,6 +454,7 @@ public <strong>CommandLineRunner</strong> demo(CustomerRepository repository) {
 </pre>
 
 - The following example shows how to see the people records (none at present):
+
 <pre>
 $ curl http://localhost:8080/<strong>people</strong>
 {
@@ -452,7 +467,7 @@ $ curl http://localhost:8080/<strong>people</strong>
       "templated" : true
     },
     "search" : {
-      "href" : "http://localhost:8080/people/search"
+      "href" : <strong>"http://localhost:8080/people/search"</strong>
     }
   },
   "page" : {
@@ -464,27 +479,30 @@ $ curl http://localhost:8080/<strong>people</strong>
 }
 </pre>
 
-- Time to create a new Person! The following listing shows how to do so:
+- The following listing shows how to create a new Person:
+
 <pre>
-$ curl -i -H "Content-Type:application/json" -d '{"firstName": "Frodo", "lastName": "Baggins"}' http://localhost:8080/people
+<strong>$ curl -i -H "Content-Type:application/json" -d '{"firstName": "Frodo", "lastName": "Baggins"}' http://localhost:8080/people</strong>
 HTTP/1.1 201 Created
 Server: Apache-Coyote/1.1
 Location: http://localhost:8080/people/1
 Content-Length: 0
 Date: Wed, 26 Feb 2014 20:26:55 GMT
-
 </pre>
 
-- -i: Ensures you can see the response message including the headers. The URI of the newly created Person is shown.
-- -H "Content-Type:application/json": Sets the content type so the application knows the payload contains a JSON object.
-- -d '{"firstName": "Frodo", "lastName": "Baggins"}': Is the data being sent.
-- Note: on Windows you might need to replace the single quotes with double quotes and escape the existing double quotes, i.e. -d "{\"firstName\": \"Frodo\", \"lastName\": \"Baggins\"}".
+-i: Ensures you can see the response message including the headers. The URI of the newly created Person is shown (http://localhost:8080/people/1).
+-H "Content-Type:application/json": Sets the content type so the application knows the payload contains a <strong>JSON object</strong>.
+-d '{"firstName": "Frodo", "lastName": "Baggins"}': Is the data being sent.
 
-- Notice how the response to the POST operation includes a Location header. This contains the URI of the newly created resource. 
+- Note: on Windows you might need to replace the single quotes with double quotes and escape the existing double quotes, 
+	- i.e. -d "{\"firstName\": \"Frodo\", \"lastName\": \"Baggins\"}".
 
-- You can query for all people, as the following example shows:
+- Notice how the response to the POST operation includes a Location header. This contains the URI of the newly created resource (http://localhost:8080/people/1). 
+
+- The following example shows how to query for all people:
+
 <pre>
-$ curl http://localhost:8080/people
+<strong>$ curl http://localhost:8080/people</strong>
 {
   "_links" : {
     "self" : {
@@ -501,14 +519,14 @@ $ curl http://localhost:8080/people
       "lastName" : "Baggins",
       "_links" : {
         "self" : {
-          "href" : "http://localhost:8080/people/1"
+          "href" : <strong>"http://localhost:8080/people/1"</strong>
         }
       }
     } ]
   },
   "page" : {
     "size" : 20,
-    "totalElements" : 1,
+    <strong>"totalElements" : 1,</strong>
     "totalPages" : 1,
     "number" : 0
   }
@@ -516,8 +534,9 @@ $ curl http://localhost:8080/people
 </pre>
 
 - You can query directly for the individual record, as follows:
+
 <pre>
-$ curl http://localhost:8080/people/1
+<strong>$ curl http://localhost:8080/people/1</strong>
 {
   "firstName" : "Frodo",
   "lastName" : "Baggins",
@@ -527,25 +546,28 @@ $ curl http://localhost:8080/people/1
     }
   }
 }
-
-- This might appear to be purely web-based. However, behind the scenes, there is an H2 relational database. In production, you would probably use a real one, such as PostgreSQL.
-- 	In this guide, there is only one domain object. With a more complex system, where domain objects are related to each other, Spring Data REST renders additional links to help navigate to connected records.
 </pre>
 
-- You can find all the custom queries, as shown in the following example (You can see the URL for the query, including the HTTP query parameter, name. Note that this matches the @Param("name") annotation embedded in the interface.):
+- This might appear to be purely web-based. However, <strong>behind the scenes, there is an H2 relational database</strong>. In production, you would probably use a real one, such as <strong>PostgreSQL</strong>.
+- In this exemple, there is only one domain object. With a more complex system, where domain objects are related to each other, <strong>Spring Data REST</strong> renders additional links to help navigate to connected records.
+- The following example shows hot to find all the <strong>custom queries</strong>
+	- You can see the URL for the query, including the HTTP query parameter, name. 
+	- Note that this matches the <strong>@Param("name")</strong> annotation embedded in the interface:
+
 <pre>
-$ curl http://localhost:8080/people/search
+<strong>$ curl http://localhost:8080/people/search</strong>
 {
   "_links" : {
     "findByLastName" : {
-      "href" : "http://localhost:8080/people/search/findByLastName{?name}",
+      "href" : <strong>"http://localhost:8080/people/search/findByLastName{?name}"</strong>,
       "templated" : true
     }
   }
 }
 </pre>
 
-- The following example shows how to use the findByLastName query:
+- The following example shows how to use the <strong>findByLastName query</strong>:
+
 <pre>
 <strong>$ curl http://localhost:8080/people/search/findByLastName?name=Baggins</strong>
 {
@@ -555,7 +577,7 @@ $ curl http://localhost:8080/people/search
       "lastName" : "Baggins",
       "_links" : {
         "self" : {
-          "href" : "http://localhost:8080/people/1"
+          "href" : <strong>"http://localhost:8080/people/1"</strong>
         }
       }
     } ]
@@ -563,9 +585,10 @@ $ curl http://localhost:8080/people/search
 }
 </pre>
 
-- You can also issue PUT, PATCH, and DELETE REST calls to replace, update, or delete existing records (respectively). The following example uses a PUT call:
+- You can also issue <strong>PUT</strong>, <strong>PATCH</strong>, and <strong>DELETE</strong> REST calls to replace, update, or delete existing records (respectively). The following example uses a <strong>PUT</strong> call:
+
 <pre>
-$ curl -X PUT -H "Content-Type:application/json" -d '{"firstName": "Bilbo", "lastName": "Baggins"}' http://localhost:8080/people/1
+<strong>$ curl -X PUT -H "Content-Type:application/json" -d '{"firstName": "Bilbo", "lastName": "Baggins"}' http://localhost:8080/people/1</strong>
 $ curl http://localhost:8080/people/1
 {
   "firstName" : "Bilbo",
@@ -578,10 +601,10 @@ $ curl http://localhost:8080/people/1
 }
 </pre>
 
-- The following example uses a PATCH call:
+- The following example uses a <strong>PATCH</strong> call:
 
 <pre>
-$ curl -X PATCH -H "Content-Type:application/json" -d '{"firstName": "Bilbo Jr."}' http://localhost:8080/people/1
+<strong>$ curl -X PATCH -H "Content-Type:application/json" -d '{"firstName": "Bilbo Jr."}' http://localhost:8080/people/1</strong>
 $ curl http://localhost:8080/people/1
 {
   "firstName" : "Bilbo Jr.",
@@ -594,9 +617,10 @@ $ curl http://localhost:8080/people/1
 }
 </pre>
 
-- PUT replaces an entire record. Fields not supplied are replaced with null. You can use PATCH to update a subset of items.
+- <strong>PUT</strong> replaces an entire record. Fields not supplied are replaced with <strong>null</strong>. You can use <strong>PATCH</strong> to update a subset of items.
 
 - You can also delete records, as the following example shows:
+
 <pre>
 <strong>$ curl -X DELETE http://localhost:8080/people/1</strong>
 $ curl http://localhost:8080/people
@@ -612,11 +636,11 @@ $ curl http://localhost:8080/people
   },
   "page" : {
     "size" : 20,
-    "totalElements" : 0,
+    "<strong>totalElements" : 0</strong>,
     "totalPages" : 0,
     "number" : 0
   }
 }
 </pre>
 
-- A convenient aspect of this hypermedia-driven interface is that you can discover all the RESTful endpoints by using curl (or whatever REST client you like). You need not exchange a formal contract or interface document with your customers.
+- A convenient aspect of this <strong>hypermedia-driven interface</strong> is that </strong?you can discover all the RESTful endpoints by using curl (or whatever REST client you like)</strong>. You need not exchange a formal contract or interface document with your customers.
