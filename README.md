@@ -425,7 +425,7 @@ public <strong>CommandLineRunner</strong> demo(CustomerRepository repository) {
 	- $ curl http://localhost:8080/people
 	- $ curl http://localhost:8080/people/1
 	- $ curl http://localhost:8080/people/search
-	- $ curl http://localhost:8080/people/search/findByLastName?name=Baggins
+	- $ curl 'http://localhost:8080/people/search/findByLastName?name=Baggins'
 	- $ curl -X PUT -H "Content-Type:application/json" -d '{"firstName": "Bilbo", "lastName": "Baggins"}' http://localhost:8080/people/1
 	- $ curl -X PATCH -H "Content-Type:application/json" -d '{"firstName": "Bilbo Jr."}' http://localhost:8080/people/1
 	- $ curl -X DELETE http://localhost:8080/people/1
@@ -569,7 +569,7 @@ Date: Wed, 26 Feb 2014 20:26:55 GMT
 - The following example shows how to use the <strong>findByLastName query</strong>:
 
 <pre>
-<strong>$ curl http://localhost:8080/people/search/findByLastName?name=Baggins</strong>
+<strong>$ curl 'http://localhost:8080/people/search/findByLastName?name=Baggins'</strong>
 {
   "_embedded" : {
     "persons" : [ {
@@ -643,4 +643,4 @@ $ curl http://localhost:8080/people
 }
 </pre>
 
-- A convenient aspect of this <strong>hypermedia-driven interface</strong> is that </strong?you can discover all the RESTful endpoints by using curl (or whatever REST client you like)</strong>. You need not exchange a formal contract or interface document with your customers.
+- A convenient aspect of this <strong>hypermedia-driven interface</strong> is that <strong> you can discover all the RESTful endpoints by using curl (or whatever REST client you like)</strong>. You need not exchange a formal contract or interface document with your customers.
