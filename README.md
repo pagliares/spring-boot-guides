@@ -10,8 +10,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#04---accessing-data-mysql">04 - accessing-data-mysql</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#05---relational-data-access">05 - relational-data-access</a></p>
 
-
-## Examples
+## Part I - First steps with Spring Boot
 
 ### 01 - demo
 
@@ -180,6 +179,7 @@ public class HelloControllerIT {
 
  - Refer to https://spring.io/guides/gs/spring-boot if you are interested on more information about the HelloController example, such as Jar and Groovy language Support.
 
+## Part II - Persistence with Spring Boot
 
 ### 04 - accessing-data-mysql
 
@@ -417,6 +417,10 @@ public <strong>CommandLineRunner</strong> demo(CustomerRepository repository) {
 </pre>
 
 - <strong>By default, Spring Boot enables JPA repository support and looks in the package (and its subpackages) where @SpringBootApplication is located</strong>. If your configuration has JPA repository interface definitions located in a package that is not visible, you can point out alternate packages by using @EnableJpaRepositories and its type-safe basePackageClasses=MyRepository.class parameter.
+
+
+## Part III - RESTful with Spring Boot
+
 
 ### 08 - accessing-data-rest
 
