@@ -644,3 +644,75 @@ $ curl http://localhost:8080/people
 </pre>
 
 - A convenient aspect of this <strong>hypermedia-driven interface</strong> is that <strong> you can discover all the RESTful endpoints by using curl (or whatever REST client you like)</strong>. You need not exchange a formal contract or interface document with your customers.
+
+### 09 - rest-service
+
+- Refer to https://spring.io/guides/gs/rest-service/ if you are interested on more information about this example.
+- This example walks you through the process of creating a <strong>“Hello, World” RESTful web service with Spring</strong>.
+- Dependencies: <strong>Spring Web</strong>.
+- The example uses the <strong>Jackson JSON library</strong> to automatically marshal instances of type Greeting into JSON. Jackson is included by default by the <strong>web starter</strong>.
+- You will build a service that will accept HTTP GET requests at http://localhost:8080/greeting. It will respond with a JSON representation of a greeting, as the following listing shows:
+
+<pre>{"id":1,"content":"Hello, World!"}</pre>
+
+- You can customize the greeting with an optional name parameter in the query string, as the following listing shows:
+
+<pre>http://localhost:8080/greeting?name=User</pre>
+
+<pre>{"id”:2,”content":"Hello, User!"}</pre>
+
+- To model the greeting representation, create a resource representation class (Greeting POJO). 
+
+<pre>
+package com.example.restservice;
+
+public class Greeting {
+
+   private final long id;
+   private final String content;
+
+   public Greeting(long id, String content) {
+	this.id = id;
+	this.content = content;
+   }
+
+   public long getId() {
+	return id;
+   }
+
+   public String getContent() {
+	return content;
+   }
+}
+</pre>
+
+- In Spring’s approach to building RESTful web services, <strong>HTTP requests are handled by a controller</strong>. 
+- These components are identified by the <strong>@RestController</strong> annotation
+- the <strong>GreetingController</strong> shown in the following listing  handles GET requests for <strong>/greeting</strong> by returning a new instance of the Greeting class:
+
+<pre>
+<strong>@RestController</strong>
+public class GreetingController {
+
+   private static final String template = "Hello, %s!";
+   <strong>private final AtomicLong counter = new AtomicLong()</strong>;
+
+   <strong>@GetMapping("/greeting")</strong>
+   public Greeting greeting(<strong>@RequestParam(value = "name", defaultValue = "World"</strong>) String name) {
+	return new Greeting(<strong>counter.incrementAndGet(), String.format(template, name)</strong>);
+   }
+}
+</pre>
+
+- The <strong>@GetMapping</strong> annotation ensures that HTTP GET requests to <strong>/greeting</strong> are mapped to the <strong>greeting()</strong> method.
+- There are companion annotations for other HTTP verbs (e.g. <strong>@PostMapping</strong> for POST). There is also a <strong>@RequestMapping</strong> annotation that they all derive from, and can serve as a synonym (e.g. <strong>@RequestMapping(method=GET)</strong>).
+- <strong>@RequestParam</strong> binds the value of the query string parameter name into the name parameter of the <strong>greeting()</strong> method. If the name parameter is absent in the request, the defaultValue of <strong>World</strong> is used.
+- The implementation of the method body creates and returns a new Greeting object with id and content attributes based on the next value from the counter and formats the given name by using the greeting template.
+- <strong>Important:</strong> A key difference between a traditional MVC controller and the RESTful web service controller shown earlier is the way that the HTTP response body is created. Rather than relying on a view technology to perform server-side rendering of the greeting data to HTML, this RESTful web service controller populates and returns a Greeting object. The object data will be written directly to the HTTP response as JSON. 
+- This example code uses Spring <strong>@RestController</strong> annotation, which marks the class as a controller where every method returns a domain object instead of a view. It is shorthand for including both <strong>@Controller</strong> and <strong>@ResponseBody</strong>.
+- The Greeting object must be converted to JSON. Thanks to Spring’s HTTP message converter support, you need not do this conversion manually. Because <strong>Jackson 2</strong> is on the classpath, Spring’s <strong>MappingJackson2HttpMessageConverter</strong> is automatically chosen to convert the Greeting instance to JSON.
+- Notice also how the <strong>id attribute</strong> has changed from 1 to 2 and so on after each request. This proves that you are working against the <strong>same GreetingController instance across multiple requests</strong> and that its counter field is being incremented on each call as expected.
+
+
+
+
