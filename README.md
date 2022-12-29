@@ -9,6 +9,13 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#03---spring-boot">03 - spring-boot</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#04---accessing-data-mysql">04 - accessing-data-mysql</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#05---relational-data-access">05 - relational-data-access</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#06---managing-transactions">06 - managing-transactions</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#07---accessing-data-jpa">07 - accessing-data-jpa</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#08---accessing-data-rest">08 - accessing-data-rest</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#09---rest-service">09 - rest-service</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#10---quoters-and-consuming-rest">10 - quoters and consuming-rest</a></p>
+
+
 
 ## Part I - First steps with Spring Boot
 
