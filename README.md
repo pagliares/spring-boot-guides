@@ -726,6 +726,99 @@ public class GreetingController {
 - The Greeting object must be converted to JSON. Thanks to Spring’s HTTP message converter support, you need not do this conversion manually. Because <strong>Jackson 2</strong> is on the classpath, Spring’s <strong>MappingJackson2HttpMessageConverter</strong> is automatically chosen to convert the Greeting instance to JSON.
 - Notice also how the <strong>id attribute</strong> has changed from 1 to 2 and so on after each request. This proves that you are working against the <strong>same GreetingController instance across multiple requests</strong> and that its counter field is being incremented on each call as expected.
 
+### 10 - quoters and consuming-rest
 
+- Refer to https://spring.io/guides/gs/consuming-rest/ if you are interested on more information about this example.
+- This example walks you through the process of creating an <strong>application that consumes a RESTful web service</strong>.
+- You will build an application that uses <strong>Spring’s RestTemplate</strong> to retrieve a <strong>random Spring Boot quotation</strong> at http://localhost:8080/api/random
+- Dependencies in the consuming-rest project: <strong>Spring Web</strong>.
+- To run the example (consuming-rest) we need a source of REST resources. We use a second project for this purpose (quoters, from https://github.com/spring-guides/quoters)
+- You can run quoters application in a separate terminal and access the result at http://localhost:8080/api/random. 
+	- That address randomly fetches a quotation about Spring Boot and returns it as a <strong>JSON document</strong>. 
+- Other valid addresses include 
+	- http://localhost:8080/api/ (for all the quotations) and 
+	- http://localhost:8080/api/1 (for the first quotation), 
+	- http://localhost:8080/api/2 (for the second quotation), and so on (up to 11 at present).
+- Dependencies in the quoters project:
+	- Spring MVC
+	- Spring Data JPA
+	- H2 embedded database
+- If you request that URL through a <strong>web browser</strong> or <strong>curl</strong>, you receive a <strong>JSON document</strong> that looks something like this:
+
+<pre>
+$ curl http://localhost:8080/api/random
+{
+   type: "success",
+   value: {
+      id: 10,
+      quote: "Really loving Spring Boot, makes stand alone Spring apps easy."
+   }
+}
+</pre>
+
+- <strong>A more useful way to consume a REST web service is programmatically</strong>. To help you with that task, Spring provides a convenient template class called <strong>RestTemplate</strong>. 
+- <strong>RestTemplate</strong> makes interacting with most RESTful services a one-line incantation. And it can even bind that data to custom domain types.
+- The example presents  a domain class (Quote) that contains the data that you need.  
+
+<pre>
+package com.example.consumingrest;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+<strong>@JsonIgnoreProperties(ignoreUnknown = true)</strong>
+public class Quote {
+
+  private String type;
+  private Value value;
+
+  ...  // getters and setters ommited
+
+ 
+}
+
+</pre>
+
+- It is annotated with <strong>@JsonIgnoreProperties</strong> from the <strong>Jackson JSON processing library</strong> to indicate that any properties not bound in this type should be ignored.
+- To directly <strong>bind your data to your custom types</strong>, you need to specify the variable name to be exactly the same as the key in the JSON document returned from the API. 
+- In case your <strong>variable name</strong> and <strong>key in JSON doc</strong> do not match, you can use <strong>@JsonProperty</strong> annotation to specify the exact key of the JSON document. 
+	- This example matches each variable name to a JSON key, so you do not need that annotation here.
+- The example also shwos a <strong>ConsumingRestApplication</strong> class to get it to show quotations from our RESTful source. The class has:
+	- A <strong>logger</strong>, to send output to the log (the console, in this example).
+	- A <strong>RestTemplate</strong>, which uses the <strong>Jackson JSON processing library</strong> to process the incoming data.
+	- A <strong>CommandLineRunner</strong> that <strong>runs the RestTemplate</strong> (and, consequently, fetches our quotation) on <strong>startup</strong>.
+	
+<pre>
+
+@SpringBootApplication
+public class ConsumingRestApplication {
+
+	private static final Logger log = LoggerFactory.getLogger(ConsumingRestApplication.class);
+
+	public static void main(String[] args) {
+		SpringApplication.run(ConsumingRestApplication.class, args);
+	}
+
+	<strong>@Bean</strong>
+	public RestTemplate restTemplate(RestTemplateBuilder builder) {
+		return builder.build();
+	}
+
+	<strong>@Bean</strong>
+	public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
+		return args -> {
+			<strong>Quote quote = restTemplate.getForObject("http://localhost:8080/api/random", Quote.class);</strong>
+			log.info(quote.toString());
+		};
+	}
+}
+
+</pre>
+
+- Since the quoters project is already running on <strong>port 8080</strong>, you <strong>MUST</strong> initialize the project <strong>consuming-rest</strong> in another port (if you don't do this, when try running <strong>consumming-rest</strong> you will get an error of <strong>port 8080 already in use</strong> (by <strong>quoters</strong> application).
+- To change de <strong>default port (8080)</strong> to another one (for example, <strong>9090</strong>) include the line below in the file src/main/resources/<strong>application.properties</strong> of the <strong>consuming-rest project</strong> and run again the application:
+
+<pre>server.port=<strong>9090</strong></pre>. 
+
+- If you see an error that reads, Could not extract response: no suitable HttpMessageConverter found for response type [class com.example.consumingrest.Quote], it is possible that you are in an environment that cannot connect to the backend service (which sends JSON if you can reach it). Maybe you are behind a corporate proxy. Try setting the http.proxyHost and http.proxyPort system properties to values appropriate for your environment.
 
 
