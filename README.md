@@ -15,6 +15,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#09---rest-service">09 - rest-service</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#10---quoters-and-consuming-rest">10 - quoters and consuming-rest</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#11---actuator-service">11 - actuator-service</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#12---rest-hateoas">12 - rest-hateoas</a></p>
 
 
 ## Part I - First steps with Spring Boot
@@ -955,43 +956,16 @@ public class HelloWorldApplicationTests {
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/rest-hateoas/ if you are interested on more information about this example.
+
+<strong>12.1 Introduction</strong>
+
 - This example walks you through the process of creating a <strong>“Hello, World” Hypermedia-driven REST web service with Spring HATEOAS</strong>.
 - Hypermedia is an important aspect of REST. It lets you build services that <strong>decouple client and server to a large extent and let them evolve independently</strong>. 
 - <strong>The representations returned for REST resources contain not only data but also links to related resources</strong>. Thus, the design of the representations is crucial to the design of the overall service.
 - <strong>Spring HATEOAS</strong>: a library of APIs that you can use to create links that point to Spring MVC controllers, build up resource representations, and control how they are rendered into supported hypermedia formats (such as HAL).
-- The service presented in this example will accept HTTP GET requests at .
-<pre>
-http://localhost:8080/greeting
-
-{
-  "content":"Hello, World!",
-  "_links":{
-    "self":{
-      <strong>"href":"http://localhost:8080/greeting?name=World"</strong>
-    }
-  }
-}
-</pre>
-
-- The response is a JSON representation of a greeting with the simplest possible hypermedia element, a link that points to the resource itself.
-- The response already indicates that you can customize the greeting with an optional name parameter in the query string:
-
-<pre>
-http://localhost:8080/greeting<strong>?name=User</strong>
-
-{
-  "content":"Hello, <strong>User</strong>!",
-  "_links":{
-    "self":{
-      "href":"http://localhost:8080/greeting?name=User"
-    }
-  }
-}
-</pre>
-
 - <strong>Dependencies</strong> used in this example (spring boot Maven project): Spring HATEOAS.
 
-<strong>Create a Resource Representation Class</strong>
+<strong>12.2 Resource representation class</strong>
 
 - To model the greeting representation, create a <strong>resource representation class</strong>. 
 
@@ -1016,10 +990,10 @@ public class Greeting <strong>extends RepresentationModel<Greeting></strong> {
 
 - Spring will use the Jackson JSON library to automatically marshal instances of type Greeting into JSON.
 
-<strong>Create a REST Controller</strong>
+<strong>12.3 REST controller</strong>
 
 - In Spring’s approach to building RESTful web services, HTTP requests are handled by a controller. 
-- We use the @RestController annotation, which combines the <strong>@Controller</strong> and <strong>@ResponseBody</strong> annotations.
+- We use the <strong>@RestController</strong> annotation, which combines the <strong>@Controller</strong> and <strong>@ResponseBody</strong> annotations.
 
 <pre>
 <strong>@RestController</strong>
@@ -1049,9 +1023,10 @@ public class GreetingController {
 
 - The call to withSelfRel() creates a Link instance that you add to the Greeting representation model.
 
+<strong>12.4 Testing the service</strong>
 
-Test the Service
-- Now that the service is up, visit http://localhost:8080/greeting, where you should see the following content:
+<pre>
+<strong>http://localhost:8080/greeting</strong>
 {
   "content":"Hello, World!",
   "_links":{
@@ -1060,17 +1035,21 @@ Test the Service
     }
   }
 }
+</pre>
 
-http://localhost:8080/greeting?name=User
+<pre>
+
+http://localhost:8080/greeting<strong>?name=User</strong>
 
 {
-  "content":"Hello, User!",
+  "content":"Hello, <strong>User!",
   "_links":{
     "self":{
       "href":"http://localhost:8080/greeting?name=User"
     }
   }
 }
+</pre>
 
 
 
