@@ -1042,7 +1042,7 @@ public class GreetingController {
 http://localhost:8080/greeting<strong>?name=User</strong>
 
 {
-  "content":"Hello, <strong>User!",
+  "content":"Hello, <strong>User</strong>!",
   "_links":{
     "self":{
       "href":"http://localhost:8080/greeting?name=User"
