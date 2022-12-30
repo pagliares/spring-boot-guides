@@ -991,44 +991,17 @@ http://localhost:8080/greeting<strong>?name=User</strong>
 
 - <strong>Dependencies</strong> used in this example (spring boot Maven project): Spring HATEOAS.
 
-Adding a JSON Library Because you will use JSON to send and receive information, you need a JSON library. In this guide, you will use the Jayway JsonPath library.
+<strong>Create a Resource Representation Class</strong>
 
-- To include the library in a Maven build, add the following dependency to your pom.xml file:
+- To model the greeting representation, create a <strong>resource representation class</strong>. 
 
-<dependency>
-  <groupId>com.jayway.jsonpath</groupId>
-  <artifactId>json-path</artifactId>
-  <scope>test</scope>
-</dependency>
-
-Create a Resource Representation Class
-
-- the JSON representation of the resource will be enriched with a list of hypermedia elements in a _links property. The most rudimentary form of this is a link that points to the resource itself.
-
-{
-  "content":"Hello, World!",
-  "_links":{
-    "self":{
-      "href":"http://localhost:8080/greeting?name=World"
-    }
-  }
-}
-
-- To model the greeting representation, create a resource representation class. 
-
-package com.example.resthateoas;
-
-import org.springframework.hateoas.RepresentationModel;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class Greeting extends RepresentationModel<Greeting> {
+<pre>
+public class Greeting <strong>extends RepresentationModel<Greeting></strong> {
 
 	private final String content;
 
-	@JsonCreator
-	public Greeting(@JsonProperty("content") String content) {
+	<strong>@JsonCreator</strong>
+	public Greeting(<strong>@JsonProperty("content")</strong> String content) {
 		this.content = content;
 	}
 
@@ -1036,33 +1009,36 @@ public class Greeting extends RepresentationModel<Greeting> {
 		return content;
 	}
 }
+</pre>
 
-@JsonCreator: Signals how Jackson can create an instance of this POJO.
+	- <strong>@JsonCreator</strong>: Signals how Jackson can create an instance of this POJO.
+	- <strong>@JsonProperty</strong>: Marks the field into which Jackson should put this constructor argument.
 
-@JsonProperty: Marks the field into which Jackson should put this constructor argument.
+- Spring will use the Jackson JSON library to automatically marshal instances of type Greeting into JSON.
 
-Spring will use the Jackson JSON library to automatically marshal instances of type Greeting into JSON.
+<strong>Create a REST Controller</strong>
 
-Create a REST Controller
+- In Spring’s approach to building RESTful web services, HTTP requests are handled by a controller. 
+- We use the @RestController annotation, which combines the <strong>@Controller</strong> and <strong>@ResponseBody</strong> annotations.
 
-In Spring’s approach to building RESTful web services, HTTP requests are handled by a controller. The components are identified by the @RestController annotation, which combines the @Controller and @ResponseBody annotations.
-
-
-@RestController
+<pre>
+<strong>@RestController</strong>
 public class GreetingController {
 
 	private static final String TEMPLATE = "Hello, %s!";
 
-	@RequestMapping("/greeting")
+	<strong>@RequestMapping("/greeting")</strong>
 	public HttpEntity<Greeting> greeting(
-		@RequestParam(value = "name", defaultValue = "World") String name) {
+		<strong>@RequestParam(value = "name", defaultValue = "World")</strong> String name) {
 
 		Greeting greeting = new Greeting(String.format(TEMPLATE, name));
-		greeting.add(linkTo(methodOn(GreetingController.class).greeting(name)).withSelfRel());
+		<strong>greeting.add(linkTo(methodOn(GreetingController.class).greeting(name)).withSelfRel());</strong>
 
-		return new ResponseEntity<>(greeting, HttpStatus.OK);
+		return new <strong>ResponseEntity<>(greeting, HttpStatus.OK)</strong>;
 	}
 }
+
+</pre>
 
 - The @RequestMapping annotation ensures that HTTP requests to /greeting are mapped to the greeting() method.
 - 	The above example does not specify GET vs. PUT, POST, and so forth, because @RequestMapping maps all HTTP operations by default. Use @GetMapping("/greeting") to narrow this mapping.
