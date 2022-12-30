@@ -14,7 +14,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#08---accessing-data-rest">08 - accessing-data-rest</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#09---rest-service">09 - rest-service</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#10---quoters-and-consuming-rest">10 - quoters and consuming-rest</a></p>
- 
+<p><a href="https://github.com/pagliares/spring-boot-guides#11---actuator-service">11 - actuator-service</a></p>
 
 
 ## Part I - First steps with Spring Boot
