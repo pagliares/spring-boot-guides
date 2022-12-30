@@ -21,6 +21,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 
 ### 01 - demo
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - This first Spring Boot was generated with aid of Spring Initializer (https://start.spring.io/) by selecting Maven as build tool, Spring Boot 3.0.0, jar packaging, Java 17, and with the Spring Web Dependency. 
 
 - In the example we program a classic “Hello World!” endpoint (RESTful) that can be accessed from any browser. 
@@ -52,6 +53,7 @@ public class DemoApplication {
 
 ### 02 - command-line-spring-boot
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - In addition to web applications, we can use spring boot to develop command-line programs.
 - This example shows how to create a simple command line application in Spring Boot by implementing the interface CommandLineRunner (in the next example we will provide an alternative implementation that uses Java SE 8 lambdas).
 - This example project was created with Spring Initializr without explicitly adding any dependencies
@@ -191,10 +193,12 @@ public class HelloControllerIT {
 
 ### 04 - accessing-data-mysql
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - This example demonstrates how to develop a Spring application that is bound to a MySQL database and is ready for production.
 
 ### 05 - relational-data-access
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/relational-data-access/ if you are interested on more information about this example.
 - This example demonstrates the process of accessing relational data with Spring.
 - You will build an application that uses Spring’s JdbcTemplate to access data stored in a relational database.
@@ -281,6 +285,7 @@ log.info("Querying for customer records where first_name = 'Josh':");
 
 ### 06 - managing-transactions
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/managing-transactions/ if you are interested on more information about this example.
 - Before trying this example, we suggest reviewing the use of transactions with JDBC (see example 20 - TransactionManagement in the repository located at: https://github.com/pagliares/jdbc-hands-on)
 - The example (managing-transactions) in this repo walks you through the process of wrapping database operations with non-intrusive transactions.
@@ -351,6 +356,7 @@ class AppRunner <strong>implements CommandLineRunner</strong> {
 
 ### 07 - accessing-data-jpa 
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/accessing-data-jpa/ if you are interested on more information about this example.
 - This example walks you through the process of building an application that uses <strong>Spring Data JPA</strong> to store and retrieve data in a relational database.
 - This example is a simple application that uses Spring Data JPA to save objects to and fetch them from a database, all without writing a concrete repository implementation.
@@ -432,6 +438,7 @@ public <strong>CommandLineRunner</strong> demo(CustomerRepository repository) {
 
 ### 08 - accessing-data-rest
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/accessing-data-rest/ if you are interested on more information about this example.
 - This example walks you through the process of creating an application that accesses relational <strong>JPA-based backend data</strong> through a <strong>hypermedia-based RESTful front end</strong>.
 - You will build a Spring application that lets you create and retrieve <strong>Person objects</strong> stored in a database by using <strong>Spring Data REST</strong>. <strong>Spring Data REST</strong> takes the features of <strong>Spring HATEOAS</strong> and <strong>Spring Data JPA</strong> and automatically combines them together.
@@ -668,6 +675,7 @@ $ curl http://localhost:8080/people
 
 ### 09 - rest-service
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/rest-service/ if you are interested on more information about this example.
 - This example walks you through the process of creating a <strong>“Hello, World” RESTful web service with Spring</strong>.
 - Dependencies: <strong>Spring Web</strong>.
@@ -736,6 +744,7 @@ public class GreetingController {
 
 ### 10 - quoters and consuming-rest
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/consuming-rest/ if you are interested on more information about this example.
 - This example walks you through the process of creating an <strong>application that consumes a RESTful web service</strong>.
 - You will build an application that uses <strong>Spring’s RestTemplate</strong> to retrieve a <strong>random Spring Boot quotation</strong> at http://localhost:8080/api/random
@@ -831,6 +840,7 @@ public class ConsumingRestApplication {
 
 ### 11 - actuator-service
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/actuator-service/ if you are interested on more information about this example.
 - <strong>Spring Boot Actuator</strong> is a sub-project of Spring Boot. It <strong>adds several production grade services to your application</strong> with little effort on your part. 
 - In this example, you will build an application and then see how to add these services.
