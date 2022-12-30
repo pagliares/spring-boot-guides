@@ -951,6 +951,150 @@ public class HelloWorldApplicationTests {
 }
 </pre>
 
+### 12 - rest-hateoas
+
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- Refer to https://spring.io/guides/gs/rest-hateoas/ if you are interested on more information about this example.
+- This example walks you through the process of creating a <strong>“Hello, World” Hypermedia-driven REST web service with Spring HATEOAS</strong>.
+- Hypermedia is an important aspect of REST. It lets you build services that <strong>decouple client and server to a large extent and let them evolve independently</strong>. 
+- <strong>The representations returned for REST resources contain not only data but also links to related resources</strong>. Thus, the design of the representations is crucial to the design of the overall service.
+- <strong>Spring HATEOAS</strong>: a library of APIs that you can use to create links that point to Spring MVC controllers, build up resource representations, and control how they are rendered into supported hypermedia formats (such as HAL).
+- The service presented in this example will accept HTTP GET requests at .
+<pre>
+http://localhost:8080/greeting
+
+{
+  "content":"Hello, World!",
+  "_links":{
+    "self":{
+      <strong>"href":"http://localhost:8080/greeting?name=World"</strong>
+    }
+  }
+}
+</pre>
+
+- The response is a JSON representation of a greeting with the simplest possible hypermedia element, a link that points to the resource itself.
+- The response already indicates that you can customize the greeting with an optional name parameter in the query string:
+
+<pre>
+http://localhost:8080/greeting<strong>?name=User</strong>
+
+{
+  "content":"Hello, <strong>User</strong>!",
+  "_links":{
+    "self":{
+      "href":"http://localhost:8080/greeting?name=User"
+    }
+  }
+}
+</pre>
+
+- <strong>Dependencies</strong> used in this example (spring boot Maven project): Spring HATEOAS.
+
+Adding a JSON Library Because you will use JSON to send and receive information, you need a JSON library. In this guide, you will use the Jayway JsonPath library.
+
+- To include the library in a Maven build, add the following dependency to your pom.xml file:
+
+<dependency>
+  <groupId>com.jayway.jsonpath</groupId>
+  <artifactId>json-path</artifactId>
+  <scope>test</scope>
+</dependency>
+
+Create a Resource Representation Class
+
+- the JSON representation of the resource will be enriched with a list of hypermedia elements in a _links property. The most rudimentary form of this is a link that points to the resource itself.
+
+{
+  "content":"Hello, World!",
+  "_links":{
+    "self":{
+      "href":"http://localhost:8080/greeting?name=World"
+    }
+  }
+}
+
+- To model the greeting representation, create a resource representation class. 
+
+package com.example.resthateoas;
+
+import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class Greeting extends RepresentationModel<Greeting> {
+
+	private final String content;
+
+	@JsonCreator
+	public Greeting(@JsonProperty("content") String content) {
+		this.content = content;
+	}
+
+	public String getContent() {
+		return content;
+	}
+}
+
+@JsonCreator: Signals how Jackson can create an instance of this POJO.
+
+@JsonProperty: Marks the field into which Jackson should put this constructor argument.
+
+Spring will use the Jackson JSON library to automatically marshal instances of type Greeting into JSON.
+
+Create a REST Controller
+
+In Spring’s approach to building RESTful web services, HTTP requests are handled by a controller. The components are identified by the @RestController annotation, which combines the @Controller and @ResponseBody annotations.
+
+
+@RestController
+public class GreetingController {
+
+	private static final String TEMPLATE = "Hello, %s!";
+
+	@RequestMapping("/greeting")
+	public HttpEntity<Greeting> greeting(
+		@RequestParam(value = "name", defaultValue = "World") String name) {
+
+		Greeting greeting = new Greeting(String.format(TEMPLATE, name));
+		greeting.add(linkTo(methodOn(GreetingController.class).greeting(name)).withSelfRel());
+
+		return new ResponseEntity<>(greeting, HttpStatus.OK);
+	}
+}
+
+- The @RequestMapping annotation ensures that HTTP requests to /greeting are mapped to the greeting() method.
+- 	The above example does not specify GET vs. PUT, POST, and so forth, because @RequestMapping maps all HTTP operations by default. Use @GetMapping("/greeting") to narrow this mapping.
+
+- Because the @RestController annotation is present on the class, an implicit @ResponseBody annotation is added to the greeting method. This causes Spring MVC to render the returned HttpEntity and its payload (the Greeting) directly to the response.
+
+- The most interesting part of the method implementation is how you create the link that points to the controller method and how you add it to the representation model. Both linkTo(…) and methodOn(…) are static methods on ControllerLinkBuilder that let you fake a method invocation on the controller. The returned LinkBuilder will have inspected the controller method’s mapping annotation to build up exactly the URI to which the method is mapped.
+
+- The call to withSelfRel() creates a Link instance that you add to the Greeting representation model.
+
+
+Test the Service
+- Now that the service is up, visit http://localhost:8080/greeting, where you should see the following content:
+{
+  "content":"Hello, World!",
+  "_links":{
+    "self":{
+      "href":"http://localhost:8080/greeting?name=World"
+    }
+  }
+}
+
+http://localhost:8080/greeting?name=User
+
+{
+  "content":"Hello, User!",
+  "_links":{
+    "self":{
+      "href":"http://localhost:8080/greeting?name=User"
+    }
+  }
+}
 
 
 
