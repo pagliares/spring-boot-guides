@@ -14,7 +14,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#08---accessing-data-rest">08 - accessing-data-rest</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#09---rest-service">09 - rest-service</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#10---quoters-and-consuming-rest">10 - quoters and consuming-rest</a></p>
-
+ 
 
 
 ## Part I - First steps with Spring Boot
@@ -827,5 +827,121 @@ public class ConsumingRestApplication {
 <pre>server.port=<strong>9090</strong></pre>. 
 
 - If you see an error that reads, Could not extract response: no suitable HttpMessageConverter found for response type [class com.example.consumingrest.Quote], it is possible that you are in an environment that cannot connect to the backend service (which sends JSON if you can reach it). Maybe you are behind a corporate proxy. Try setting the http.proxyHost and http.proxyPort system properties to values appropriate for your environment.
+
+### 11 - actuator-service
+
+- Refer to https://spring.io/guides/gs/actuator-service/ if you are interested on more information about this example.
+- <strong>Spring Boot Actuator</strong> is a sub-project of Spring Boot. It <strong>adds several production grade services to your application</strong> with little effort on your part. 
+- In this example, you will build an application and then see how to add these services.
+- In this example, you will build a <strong>simple RESTful service</strong> with Spring and add to it some useful built-in services with Spring Boot Actuator.
+- This example takes you through creating a <strong>“Hello, world” RESTful web service with Spring Boot Actuator</strong>. 
+- You will build a service that handles <strong>GET requests for /hello-world, optionally with a name query parameter</strong>.
+
+<pre>
+$ curl http://localhost:<strong>9000</strong>/hello-world
+</pre>
+
+- It responds with the following JSON:
+
+<pre>
+{
+    "id": 1,
+    "content": "Hello, World!"
+}
+</pre>
+
+- The id field is a unique identifier for the greeting, and content contains the textual representation of the greeting.
+
+- <strong>Dependencies of the example</strong>:  Spring Web and Spring Boot Actuator.
+- The <strong>@SpringBootApplication</strong> annotation provides a load of defaults (like the <strong>embedded servlet container</strong>), depending on the contents of your classpath and other things. It also turns on <strong>Spring MVC’s @EnableWebMvc</strong> annotation, which activates web endpoints.
+
+<pre>
+public class Greeting {
+
+  private final long id;
+  private final String content;
+
+  // Getters and setters ommited
+  ...
+}
+</pre>
+
+- The example includes a <strong>endpoint controller</strong> that will serve the representation class.
+- In Spring, REST endpoints are Spring MVC controllers.
+- The example illustrates how to handle a GET request for the /hello-world endpoint and returns the Greeting resource:
+
+<pre>
+<strong>@Controller</strong> 
+public class HelloWorldController {
+
+  private static final String template = "Hello, %s!";
+  private final AtomicLong counter = new AtomicLong();
+
+  <strong>@GetMapping("/hello-world")</strong>
+  <strong>@ResponseBody</strong>
+  public Greeting sayHello(<strong>@RequestParam(name="name", required=false, defaultValue="Stranger")</strong> String name) {
+    return new Greeting(counter.incrementAndGet(), String.format(template, name));
+  }
+
+}
+</pre>
+
+- The key difference between a <strong>human-facing controller and a REST endpoint controller is in how the response is created</strong>. Rather than rely on a view (such as JSP or Thymeleaf) to render model data in HTML, an <strong>endpoint controller returns the data to be written directly to the body of the response</strong>.
+- The <strong>@ResponseBody</strong> annotation tells Spring MVC not to render a model into a view but, rather, to write the returned object into the response body. It does so by using one of Spring’s message converters. Because <strong>Jackson 2 is in the classpath</strong>, MappingJackson2HttpMessageConverter will handle the conversion of a Greeting object to JSON if the <strong>request’s Accept header specifies that JSON should be returned</strong>.
+- <strong>Spring Boot Actuator</strong> defaults to running on port <strong>8080</strong>. By adding an <strong>application.properties</strong> file, you can override that setting. 
+
+<pre>
+<strong>server.port: 9000</strong>
+management.server.port: 9001
+management.server.address: 127.0.0.1
+</pre>
+
+- You can test that it is working on <strong>port 9000</strong> by running the following commands in a terminal:
+
+<pre>
+<strong>$ curl localhost:9000/hello-world</strong>
+{"id":1,"content":"Hello, Stranger!"}
+</pre>
+
+<pre>
+<strong>$ curl localhost:9000/actuator/health</strong>
+{"status":"<strong>UP</strong>"}
+</pre>
+
+- The <strong>status is UP</strong>, so the actuator <strong>service is running</strong>.
+- The example also presents a <strong>unit and an integration tests</strong> for your application that ensures that your controller and management endpoints are responsive.
+- Note that the tests start the application on a <strong>random port</strong>.
+
+<pre>
+<strong>@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)</strong>
+<strong>@TestPropertySource(properties = {"management.port=0"})</strong>
+public class HelloWorldApplicationTests {
+
+    <strong>@LocalServerPort</strong>
+    private int port;
+
+    @Value("${local.management.port}")
+    private int mgt;
+
+    <strong>@Autowired</strong>
+    private TestRestTemplate testRestTemplate;
+
+    <strong>@Test</strong>
+    public void <strong>shouldReturn200WhenSendingRequestToController</strong>() throws Exception {
+        …
+
+    }
+
+    <strong>@Test</strong>
+    public void <strong>shouldReturn200WhenSendingRequestToManagementEndpoint</strong>() throws Exception {
+       …
+    }
+
+}
+</pre>
+
+
+
+
 
 
