@@ -1055,25 +1055,20 @@ http://localhost:8080/greeting<strong>?name=User</strong>
 
 ### 13 - Enabling Cross Origin Requests for a RESTful Web Service (rest-service-cors)
  - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
-- Project source: rest-service-cors
-- Refer to https://spring.io/guides/gs/rest-service-cors/ if you are interested on more information about this example.
+- <strong>Project source:</strong> rest-service-cors
+- Refer to https://spring.io/guides/gs/rest-service-cors/ and https://spring.io/guides/gs/consuming-rest-jquery/ if you are interested on more information about this example.
 
 <strong>Introduction</strong>
 
 - This example presents a “Hello, World” RESTful web service with Spring that includes <strong>headers for Cross-Origin Resource Sharing (CORS) in the response</strong>. 
+- This example also presents a simple <strong>jQuery client</strong> that consumes a Spring MVC-based RESTful web service.
 - You can find more information about Spring CORS support in this blog post.
 	- https://spring.io/blog/2015/06/08/cors-support-in-spring-framework
-- <strong>Dependencies</strong>:  Spring Web.
+- <strong>Dependencies</strong>:  Spring Web and Apache httpclient5.
 
 <strong>The httpclient Dependency</strong>
 
-- To test this example, you need the <strong>Apache httpclient library</strong>.
-
-<pre>
-    groupId: org.apache.httpcomponents.client5 
-    artifactId: httpclient5 
-    scope:test
-</pre>
+- To test this example, you need, in addition to Spring Boot dependencies, the <strong>Apache httpclient library</strong>. See pom.xml for details.
 
 <strong>Resource Representation Class</strong>
 
@@ -1198,8 +1193,8 @@ java -jar target/gs-rest-service-cors-0.1.0.jar
 
 <pre> {"id":2,"content":"Hello, Florentino!"} </pre>
 
-- Now you can test that the <storng>CORS headers</strong> are in place and allow a <strong>Javascript client from another origin</strong> to access the service. 
-- To do so, you need to create a Javascript client to consume the service. The following listing shows such a client (<strong>hello.js</strong>)
+- Now you can test that the <strong>CORS headers</strong> are in place and allow a <strong>Javascript client from another origin</strong> to access the service. 
+- To do so, you need to create a <strong>Javascript client</strong> to consume the service. The following listing shows such a client (<strong>hello.js</strong>)
 
 <pre>
 $(document).ready(function() {
@@ -1213,13 +1208,20 @@ $(document).ready(function() {
 });
 </pre>
 
-- This script uses <strong>jQuery</strong> to consume the REST service at http://localhost:8080/greeting. It is loaded by index.html nested inside the head element:
+- This <strong>javascript client</strong> is represented as a simple JavaScript function. It uses <strong>jQuery’s $.ajax() method</strong>to consume the REST service at http://localhost:8080/greeting. 
+- If successful, it will assign the JSON received to data, effectively making it a Greeting model object. The <strong>id</strong> and content are then appended to the <strong>greeting-id and greeting-content DOM elements</strong> respectively.
+- Note the use of the <strong>jQuery promise .then()</strong>. This directs jQuery to execute the <strong>anonymous function</strong> when the <strong>$.ajax() method</strong> completes, passing the data result from the completed AJAX request.
+- This <strong>javascript client</strong> uses <strong>jQuery</strong> to consume the REST service at http://localhost:8080/greeting. It is loaded by index.html nested inside the head element:
 
 <pre>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="hello.js"></script>
 </pre>
-     
+
+- The first script tag loads the <strong>minified jQuery library (jquery.min.js)</strong> from a <strong>content delivery network (CDN)</strong> so that you don’t have to download jQuery and place it in your project. 
+- It also loads the controller code (<strong>hello.js</strong>) from the application’s path.
+- Also note that the p tags (see index.html) include <strong>class attributes</strong>.
+- These class attributes help jQuery to reference the HTML elements and update the text with the values from the id and content properties of the JSON received from the REST service.
 - Once the app starts, open http://localhost:8080 in your browser, where you should see the following:
 
 <pre>
