@@ -1070,13 +1070,9 @@ http://localhost:8080/greeting<strong>?name=User</strong>
 - To test this example, you need the <strong>Apache httpclient library</strong>.
 
 <pre>
-
-<dependency>
-  <groupId>org.apache.httpcomponents</groupId>
-  <artifactId><strong>httpclient</strong></artifactId>
-  <scope>test</scope>
-</dependency>
-
+    groupId: org.apache.httpcomponents.client5 
+    artifactId: httpclient5 
+    scope:test
 </pre>
 
 <strong>Resource Representation Class</strong>
@@ -1192,7 +1188,6 @@ public class RestServiceCorsApplication {
 java -jar target/gs-rest-service-cors-0.1.0.jar
 </pre>
 
-
 <strong>Test the service</strong>
 
 - Visit http://localhost:8080/greeting
@@ -1218,27 +1213,13 @@ $(document).ready(function() {
 });
 </pre>
 
-- This script uses <strong>jQuery</strong> to consume the REST service at http://localhost:8080/greeting. It is loaded by index.html
+- This script uses <strong>jQuery</strong> to consume the REST service at http://localhost:8080/greeting. It is loaded by index.html nested inside the head element:
 
 <pre>
-
-...
-...
-<head>
-        <title>Hello CORS</title>
-        <strong><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script></strong>
-        <strong><script src="hello.js"></script></strong>
-    </head>
-
-    <body>
-        <div>
-            <p <strong>class="greeting-id"</strong>>The ID is </p>
-            <p <strong>class="greeting-content"</strong>The content is </p>
-        </div>
-    </body>
-...
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="hello.js"></script>
 </pre>
-
+     
 - Once the app starts, open http://localhost:8080 in your browser, where you should see the following:
 
 <pre>
