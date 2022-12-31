@@ -19,12 +19,16 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#13---enabling-cross-origin-requests-for-a-restful-web-service-rest-service-cors">13 - rest-service-cors</a></p>
 
 
-
 ## Part I - First steps with Spring Boot
 
-### 01 - demo
+### 01 - Spring Quickstart Guide (demo)
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- <strong>Project source:</strong> demo.
+- Refer to https://spring.io/quickstart if you are interested on more information about this example.
+
+<strong>Introduction</strong>
+
 - This first Spring Boot was generated with aid of Spring Initializer (https://start.spring.io/) by selecting Maven as build tool, Spring Boot 3.0.0, jar packaging, Java 17, and with the Spring Web Dependency. 
 
 - In the example we program a classic “Hello World!” endpoint (RESTful) that can be accessed from any browser. 
