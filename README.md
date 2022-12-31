@@ -1051,6 +1051,214 @@ http://localhost:8080/greeting<strong>?name=User</strong>
 }
 </pre>
 
+### 13 - Enabling Cross Origin Requests for a RESTful Web Service (rest-service-cors)
+ - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- Project source: rest-service-cors
+- Refer to https://spring.io/guides/gs/rest-service-cors/ if you are interested on more information about this example.
+
+<strong>13.1 Introduction</strong>
+
+- This example presents a “Hello, World” RESTful web service with Spring that includes <strong>headers for Cross-Origin Resource Sharing (CORS) in the response</strong>. 
+- You can find more information about Spring CORS support in this blog post.
+	- https://spring.io/blog/2015/06/08/cors-support-in-spring-framework
+- <strong>Dependencies</strong>:  Spring Web.
+
+<strong>13.2 The httpclient Dependency</strong>
+
+- To test this example, you need the Apache httpclient library.
+
+<pre>
+<dependency>
+  <groupId>org.apache.httpcomponents</groupId>
+  <artifactId><strong>httpclient</strong></artifactId>
+  <scope>test</scope>
+</dependency>
+</pre>
+
+<strong>13.3 Resource Representation Class</strong>
+
+<pre>
+public class Greeting {
+    ...
+    private final long id;
+    private final String content;
+    ... 
+    ... // Getters and setters ommited
+}
+</pre>
+
+<strong>13.4 Resource controller</strong>
+
+<pre>
+<strong>@RestController</strong>
+public class GreetingController {
+
+	private static final String template = "Hello, %s!";
+
+	private final AtomicLong counter = new AtomicLong();
+	<strong>@CrossOrigin(origins = "http://localhost:8080")</strong>
+	@GetMapping("/greeting")
+	public Greeting greeting(@RequestParam(<strong>required = false</strong>, defaultValue = "World") String name) {
+		System.out.println("==== get greeting ====");
+		return new Greeting(counter.incrementAndGet(), String.format(template, name));
+	}
+
+}
+</pre>
+
+- In the example, <strong>query string parameter</strong> is not required. If it is absent in the request, the defaultValue of World is used.
+
+- <strong>@RestController</strong> annotation assumes that every method inherits the <strong>@ResponseBody</strong> semantics by default. Therefore, a returned object data is inserted directly into the response body.
+
+<strong>13.5 - Enabling CORS</strong>
+
+- You can enable <strong>cross-origin resource sharing (CORS) from either in individual controllers or globally</strong>. 
+- You can even combine global and controller-level CORS configuration.
+
+<strong>13.5.1 Controller Method CORS Configuration</strong>
+
+- Add a <strong>@CrossOrigin</strong> annotation to the <strong>handler method</strong>
+
+<pre>
+<strong>@CrossOrigin(origins = "http://localhost:8080")</strong>
+@GetMapping("/greeting")
+public Greeting greeting(@RequestParam(required = false, defaultValue = "World") String name) {
+	System.out.println("==== get greeting ====");
+	return new Greeting(counter.incrementAndGet(), String.format(template, name));
+</pre>
+
+- This <strong>@CrossOrigin</strong> annotation enables cross-origin resource sharing <strong>only for this specific method</strong>. 
+- By default, it allows all origins, all headers, and the HTTP methods specified in the <strong>@RequestMapping</strong> annotation.
+- Also, a <strong>maxAge of 30 minutes</strong> is used. You can customize this behavior by specifying the value of one of the following annotation attributes:
+	- origins
+	- methods
+	- allowedHeaders
+	- exposedHeaders
+	- allowCredentials
+	- maxAge.
+
+- In this example, we allow only http://localhost:8080 to send <strong>cross-origin requests</strong>.
+-  You can also add the <strong>@CrossOrigin</strong> annotation at the <strong>controller class level</strong> as well, to enable CORS on <strong>all handler methods of this class</strong>.
+
+<strong>13.5.2 Global CORS Configuration</strong>
+
+- In addition (or as an alternative) to fine-grained annotation-based configuration, you can define some global CORS configuration as well. 
+- By default, all origins and GET, HEAD, and POST methods are allowed.
+
+	@GetMapping("/greeting-javaconfig")
+	public Greeting greetingWithJavaconfig(@RequestParam(required = false, defaultValue = "World") String name) {
+		System.out.println("==== in greeting ====");
+		return new Greeting(counter.incrementAndGet(), String.format(template, name));
+
+
+- The difference between the greetingWithJavaconfig method and the greeting method (used in the controller-level CORS configuration) is the route (/greeting-javaconfig rather than /greeting) and the presence of the @CrossOrigin origin.
+
+- The following example, shows how to add CORS mapping in the application class:
+
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:8080");
+			}
+		};
+	}
+
+
+
+Creating the Application Class
+
+
+- You need to add a method in the Application class generated when creating the project to configure how to handle cross-origin resource sharing.
+
+@SpringBootApplication
+public class RestServiceCorsApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(RestServiceCorsApplication.class, args);
+	}
+
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:8080");
+			}
+		};
+	}
+
+}
+
+Build an executable jar
+
+./mvnw spring-boot:run
+./mvnw clean package
+java -jar target/gs-rest-service-cors-0.1.0.jar
+
+Test the service
+
+visit http://localhost:8080/greeting
+
+{"id":1,"content":"Hello, World!"}
+
+http://localhost:8080/greeting?name=User
+
+{"id":2,"content":"Hello, User!"}
+
+- Now you can test that the CORS headers are in place and allow a Javascript client from another origin to access the service. To do so, you need to create a Javascript client to consume the service. The following listing shows such a client (hello.js)
+
+$(document).ready(function() {
+    $.ajax({
+        url: "http://localhost:8080/greeting"
+    }).then(function(data, status, jqxhr) {
+       $('.greeting-id').append(data.id);
+       $('.greeting-content').append(data.content);
+       console.log(jqxhr);
+    });
+});
+
+- This script uses jQuery to consume the REST service at http://localhost:8080/greeting. It is loaded by index.html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello CORS</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="hello.js"></script>
+    </head>
+
+    <body>
+        <div>
+            <p class="greeting-id">The ID is </p>
+            <p class="greeting-content">The content is </p>
+        </div>
+    </body>
+</html>
+
+
+This is essentially the REST client created in Consuming a RESTful Web Service with jQuery, modified slightly to consume the service when it runs on localhost at port 8080. See that guide for more details on how this client was developed.
+
+Once the app starts, open http://localhost:8080 in your browser, where you should see the following:
+
+To test the CORS behaviour, you need to start the client from another server or port. Doing so not only avoids a collision between the two applications but also ensures that the client code is served from a different origin than the service. To start the app running on localhost at port 9000 (as well as the one that is already running on port 8080), run the following Maven command:
+
+./mvnw spring-boot:run -Dserver.port=9000 (Did not work in my machine. I manage to run with the command below)
+
+./mvnw spring-boot:run -Dspring-boot.run.arguments=--server.port=9000
+
+
+Once the app starts, open http://localhost:9000 in your browser, where you should see the following:
+
+
+
+If the service response includes the CORS headers, then the ID and content are rendered into the page. But if the CORS headers are missing (or insufficient for the client), the browser fails the request and the values are not rendered into the DOM.
+
+Congratulations! You have just developed a RESTful web service that includes Cross-Origin Resource Sharing with Spring
+
+
+
+
 
 
 
