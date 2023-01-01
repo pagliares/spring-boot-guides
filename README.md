@@ -16,9 +16,11 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#09---rest-service">09 - rest-service</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#10---quoters-and-consuming-rest">10 - quoters and consuming-rest</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#11---actuator-service">11 - actuator-service</a></p>
-<p><a href="https://github.com/pagliares/spring-boot-guides#12---rest-hateoas">12 - rest-hateoas</a></p>
-<p><a href="https://github.com/pagliares/spring-boot-guides#13---enabling-cross-origin-requests-for-a-restful-web-service-rest-service-cors">13 - rest-service-cors</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#12---rest-hateoas">12 - Building a Hypermedia-Driven RESTful Web Service</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#13---enabling-cross-origin-requests-for-a-restful-web-service-rest-service-cors">13 - Enabling Cross Origin Requests for a RESTful Web Service</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#14---serving-web-content-with-spring-mvc">14 - Serving Web Content with Spring MVC
+</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#15---handling-form-submission">15 - Handling Form Submission
 </a></p>
 
 
@@ -980,7 +982,7 @@ public class HelloWorldApplicationTests {
 }
 </pre>
 
-### 12 - rest-hateoas
+### 12 - Building a Hypermedia-Driven RESTful Web Service
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/rest-hateoas/ if you are interested on more information about this example.
@@ -1079,7 +1081,7 @@ http://localhost:8080/greeting<strong>?name=User</strong>
 }
 </pre>
 
-### 13 - Enabling Cross Origin Requests for a RESTful Web Service (rest-service-cors)
+### 13 - Enabling Cross Origin Requests for a RESTful Web Service  
  - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - <strong>Project source:</strong> rest-service-cors
 - Refer to https://spring.io/guides/gs/rest-service-cors/ and https://spring.io/guides/gs/consuming-rest-jquery/ if you are interested on more information about this example.
