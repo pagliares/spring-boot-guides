@@ -17,6 +17,8 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#11---actuator-service">11 - actuator-service</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#12---rest-hateoas">12 - rest-hateoas</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#13---enabling-cross-origin-requests-for-a-restful-web-service-rest-service-cors">13 - rest-service-cors</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#14---serving-web-content-with-spring-mvc">14 - Serving Web Content with Spring MVC
+</a></p>
 
 
 ## Part I - First steps with Spring Boot
@@ -1271,6 +1273,8 @@ The content is
 - If the service response includes the <strong>CORS headers</strong>, then the ID and content are rendered into the page. 
 - But if the <strong>CORS headers are missing</strong> (or insufficient for the client), the browser fails the request and the values are not rendered into the DOM.
 
+## Part IV - Spring MVC
+
 ### 14 - Serving Web Content with Spring MVC
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
@@ -1316,10 +1320,13 @@ public class GreetingController {
 
 <strong>Test the Application</strong>
 
-- visit http://localhost:8080/greeting, where you should see “Hello, World!”
+- Visit http://localhost:8080/greeting, where you should see “Hello, World!”
 - Provide a name query string parameter by visiting http://localhost:8080/greeting?name=User. Notice how the message changes from “Hello, World!” to “Hello, User!”:
 
 <strong>Home Page</strong>
 
-- Static resources, including HTML and JavaScript and CSS, can be served from your Spring Boot application by dropping them into the right place in the source code. By default, Spring Boot serves static content from resources in the classpath at /static (or /public). The index.html resource is special because, if it exists, it is used as a "`welcome page "serving-web-content/ which means it is served up as the root resource (that is, at `http://localhost:8080/
+- <strong>Static resources, including HTML and JavaScript and CSS</strong>, can be served from your Spring Boot application by dropping them into the right place in the source code. 
+- By default, <strong>Spring Boot serves static content from resources in the classpath at /static (or /public)</strong>. 
+- The index.html resource is special because, if it exists, it is used as a welcome page for the serving-web-content application, which means it is served up as the root resource
+	- That is, at http://localhost:8080/
 
