@@ -4,11 +4,12 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 
 ## Outline
 
-<p><a href="https://github.com/pagliares/spring-boot-guides#01---demo">01 - demo</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#01---demo">01 - Spring Quickstart Guide</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#02---command-line-spring-boot">02 - command-line-spring-boot</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#03---spring-boot">03 - spring-boot</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#04---accessing-data-mysql">04 - accessing-data-mysql</a></p>
-<p><a href="https://github.com/pagliares/spring-boot-guides#05---relational-data-access">05 - relational-data-access</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#05---relational-data-access">05 - Accessing Relational Data using JDBC with Spring
+</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#06---managing-transactions">06 - managing-transactions</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#07---accessing-data-jpa">07 - accessing-data-jpa</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#08---accessing-data-rest">08 - accessing-data-rest</a></p>
@@ -23,7 +24,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 
 ## Part I - First steps with Spring Boot
 
-### 01 - Spring Quickstart Guide (demo)
+### 01 - Spring Quickstart Guide  
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - <strong>Project source:</strong> demo.
@@ -220,10 +221,14 @@ mysql> create user 'springuser'@'%' identified by 'ThePassword'; -- Creates the 
 mysql> grant all on db_example.* to 'springuser'@'%'; -- Gives all privileges to the new user on the newly created database
 </pre>
 
-### 05 - relational-data-access
+### 05 - Accessing Relational Data using JDBC with Spring
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/relational-data-access/ if you are interested on more information about this example.
+- <strong>Project source:</strong> relational-data-access.
+
+<strong>Introduction</strong>
+
 - This example demonstrates the process of accessing relational data with Spring.
 - You will build an application that uses Spring’s JdbcTemplate to access data stored in a relational database.
 - The project is a spring-boot project with the dependencies JDBC API and H2 Database.
