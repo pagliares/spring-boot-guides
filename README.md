@@ -1270,3 +1270,56 @@ The content is
 
 - If the service response includes the <strong>CORS headers</strong>, then the ID and content are rendered into the page. 
 - But if the <strong>CORS headers are missing</strong> (or insufficient for the client), the browser fails the request and the values are not rendered into the DOM.
+
+### 14 - Serving Web Content with Spring MVC
+
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- <strong>Project source:</strong> serving-web-content.
+- Refer to https://spring.io/guides/gs/serving-web-content/ if you are interested on more information about this example.
+
+<strong>Introduction</strong>
+
+- This example walks you through the process of creating a “Hello, World” web site with Spring.
+- You will build an application that has a static home page and that will also accept HTTP GET requests at: http://localhost:8080/greeting.
+- It will respond with a web page that displays HTML. The body of the HTML will contain a greeting: “Hello, World!”
+- You can customize the greeting with an optional name parameter in the query string. The URL might then be http://localhost:8080/greeting?name=User.
+- The name parameter value overrides the default value of World and is reflected in the response by the content changing to “Hello, User!”
+- Dependencies: Spring Web, Thymeleaf, and Spring Boot DevTools.
+
+<strong>Web Controller</strong>
+
+- In Spring’s approach to building web sites, HTTP requests are handled by a controller. You can easily identify the controller by the @Controller annotation. 
+- In the following example, GreetingController handles GET requests for /greeting by returning the name of a View (in this case, greeting). A View is responsible for rendering the HTML content.
+
+<pre>
+@Controller
+public class GreetingController {
+
+	@GetMapping("/greeting")
+	public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
+		model.addAttribute("name", name);
+		return "greeting";
+	}
+}
+</pre>
+
+- The value of the name parameter is added to a Model object, ultimately making it accessible to the view template.
+- The implementation of the method body relies on a view technology (in this case, Thymeleaf) to perform server-side rendering of the HTML. Thymeleaf parses the greeting.html template and evaluates the th:text expression to render the value of the ${name} parameter that was set in the controller.
+
+<strong>Spring Boot Devtools</strong>
+
+- A common feature of developing web applications is coding a change, restarting your application, and refreshing the browser to view the change. This entire process can eat up a lot of time. To speed up this refresh cycle, Spring Boot offers with a handy module known as spring-boot-devtools. Spring Boot Devtools:
+	- Enables hot swapping.
+	- Switches template engines to disable caching.
+	- Enables LiveReload to automatically refresh the browser.
+	- Other reasonable defaults based on development instead of production.
+
+<strong>Test the Application</strong>
+
+- visit http://localhost:8080/greeting, where you should see “Hello, World!”
+- Provide a name query string parameter by visiting http://localhost:8080/greeting?name=User. Notice how the message changes from “Hello, World!” to “Hello, User!”:
+
+<strong>Home Page</strong>
+
+- Static resources, including HTML and JavaScript and CSS, can be served from your Spring Boot application by dropping them into the right place in the source code. By default, Spring Boot serves static content from resources in the classpath at /static (or /public). The index.html resource is special because, if it exists, it is used as a "`welcome page "serving-web-content/ which means it is served up as the root resource (that is, at `http://localhost:8080/
+
