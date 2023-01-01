@@ -1349,9 +1349,9 @@ public class GreetingController {
 
 <strong>Introduction</strong>
 
-- This example walks you through the process of using Spring to create and submit a web form.
-- In this guide, you will build a web form, which will be accessible at the following URL: http://localhost:8080/greeting
-- Dependencies and select Spring Web and Thymeleaf.
+- This example walks you through the process of using Spring to create and submit a web form, which will be accessible at the following URL: 
+	- http://localhost:8080/greeting
+- <strong>Dependencies</strong>: Spring Web and Thymeleaf.
 
 <strong>Web Controller</strong>
 
@@ -1359,22 +1359,27 @@ public class GreetingController {
 @Controller
 public class GreetingController {
 
-  @GetMapping("/greeting")
-  public String greetingForm(Model model) {
-    model.addAttribute("greeting", new Greeting());
+  <strong>@GetMapping("/greeting")</strong>
+  public String greetingForm(<strong>Model</strong> model) {
+    <strong>model.addAttribute("greeting", new Greeting());</strong>
     return "greeting";
   }
 
-  @PostMapping("/greeting")
-  public String greetingSubmit(@ModelAttribute Greeting greeting, Model model) {
-    model.addAttribute("greeting", greeting);
-    return "result";
+  <strong>@PostMapping("/greeting")</strong>
+  public String greetingSubmit(<strong>@ModelAttribute</strong> Greeting greeting, <strong>Model model</strong>) {
+    <strong>model.addAttribute("greeting", greeting);</strong>
+    return <strong>"result"</strong>;
   }
 }
 </pre>
 
-- The two methods in this controller are both mapped to /greeting. You can use @RequestMapping (which, by default, maps all HTTP operations, such as GET, POST, and so forth). However, in this case, the greetingForm() method is specifically mapped to GET by using @GetMapping, while greetingSubmit() is mapped to POST with @PostMapping. This mapping lets the controller differentiate the requests to the /greeting endpoint.
-- The greetingForm() method uses a Model object to expose a new Greeting to the view template.
+- The two methods in the controller are both mapped to /greeting. 
+- You can use <strong>@RequestMapping</strong> (which, by default, maps all HTTP operations, such as GET, POST, and so forth). However, in this case, the greetingForm() method is specifically mapped to GET by using @GetMapping, while greetingSubmit() is mapped to POST with @PostMapping. 
+- This mapping lets the controller differentiate the requests to the /greeting endpoint.
+- The <strong>greetingForm()</strong> method uses a <strong>Model object</strong> to expose a new Greeting to the view template.
+
+
+<strong>Model</strong>
 
 <pre>
 public class Greeting {
@@ -1386,39 +1391,33 @@ public class Greeting {
 }
 </pre>
 
-- The fields  id and content of the Greeting class correspond to the form fields in the greeting view and are used to capture the information from the form:
-- The implementation of the method body relies on a view technology to perform server-side rendering of the HTML by converting the view name (greeting) into a template to render. In this case, we use Thymeleaf, which parses the greeting.html template and evaluates the various template expressions to render the form.
+- The fields <strong>id</strong> and <strong>content</strong> of the Greeting class <strong>correspond to the form fields in the greeting view</strong> and are used to capture the information from the form.
+- The implementation of the method greetingSubmit relies on a view technology to perform server-side rendering of the HTML by converting the view name (greeting) into a template to render. 
+- In this case, we use <strong>Thymeleaf</strong>, which parses the <strong>greeting.html template</strong> and evaluates the various template expressions to render the form.
 
 <img align="center" width=807 height=433 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/greetingformhtml.png"/>
 
-- The th:action="@{/greeting}" expression directs the form to POST to the /greeting endpoint, while the th:object="${greeting}" expression declares the model object to use for collecting the form data. The two form fields, expressed with th:field="{id}" and th:field="{content}", correspond to the fields in the Greeting object.
-
-- the form submits to the /greeting endpoint by using a POST call. The greetingSubmit() method receives the Greeting object that was populated by the form. The Greeting is a @ModelAttribute, so it is bound to the incoming form content. 
-
-- Also, the submitted data can be rendered in the result view by referring to it by name (by default, the name of the method parameter, so greeting in this case). The id is rendered in the <p th:text="'id: ' + ${greeting.id}" /> expression. Likewise, the content is rendered in the <p th:text="'content: ' + ${greeting.content}" /> expression.
+- The <strong>th:action="@{/greeting}" expression</strong> directs the form to POST to the <strong>/greeting endpoint</strong>, while the <strong>th:object="${greeting}" expression declares the model object to use for collecting the form data</strong>. 
+- The two form fields, expressed with <strong>th:field="{id}"</strong> and <strong>th:field="{content}"</strong>, correspond to the fields in the Greeting object.
+- the form submits to the /greeting endpoint by using a POST call. The greetingSubmit() method receives the Greeting object that was populated by the form. <strong>The Greeting is a @ModelAttribute</strong>, so it is bound to the incoming form content. 
+- The submitted data can be rendered in the result view by referring to it by name (by default, the name of the method parameter, so <strong>greeting</strong> in this case). 
+- The id is rendered in the <strong><p th:text="'id: ' + ${greeting.id}" /> expression</strong>. 
+- Likewise, the content is rendered in the <strong><p th:text="'content: ' + ${greeting.content}" /> expression</strong>.
 
 <img align="center" width=810 height=329 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/greetingresulthtml.png"/>
 
-- For clarity, this example uses two separate view templates for rendering the form and displaying the submitted data. However, you can use a single view for both purposes.
+- This example uses two separate view templates for rendering the form and displaying the submitted data. However, you can use a single view for both purposes.
 
 <strong>Make the Application Executable</strong>
 
-- Although you can package this service as a traditional WAR file for deployment to an external application server, the simpler approach is to create a standalone application. You package everything in a single, executable JAR file, driven by a good old Java main() method. Along the way, you use Spring’s support for embedding the Tomcat servlet container as the HTTP runtime, instead of deploying to an external instance.
-
-<pre>
-@SpringBootApplication
-public class HandlingFormSubmissionApplication {
-
-  public static void main(String[] args) {
-    SpringApplication.run(HandlingFormSubmissionApplication.class, args);
-  }
-
-}
-</pre>
+- Although you can package this service as a traditional WAR file for deployment to an external application server, the simpler approach is to create a standalone application (JAR).
+   - This selection is done when creating the project with Spring Initializr.
+- You package everything in a single, executable JAR file, driven by a main() method. 
+- You use Spring’s support for embedding the <strong>Tomcat servlet container as the HTTP runtime</strong>, instead of deploying to an external instance.
 
 <strong>Test the service</strong>
 
-- visit http://localhost:8080/greeting
+- Visit http://localhost:8080/greeting
 
 <img align="center" width=312 height=243 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/Form.png"/>
 
