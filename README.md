@@ -4,11 +4,12 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 
 ## Outline
 
-<p><a href="https://github.com/pagliares/spring-boot-guides#01---demo">01 - demo</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#01---demo">01 - Spring Quickstart Guide</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#02---command-line-spring-boot">02 - command-line-spring-boot</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#03---spring-boot">03 - spring-boot</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#04---accessing-data-mysql">04 - accessing-data-mysql</a></p>
-<p><a href="https://github.com/pagliares/spring-boot-guides#05---relational-data-access">05 - relational-data-access</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#05---relational-data-access">05 - Accessing Relational Data using JDBC with Spring
+</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#06---managing-transactions">06 - managing-transactions</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#07---accessing-data-jpa">07 - accessing-data-jpa</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#08---accessing-data-rest">08 - accessing-data-rest</a></p>
@@ -23,7 +24,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 
 ## Part I - First steps with Spring Boot
 
-### 01 - Spring Quickstart Guide (demo)
+### 01 - Spring Quickstart Guide  
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - <strong>Project source:</strong> demo.
@@ -220,10 +221,14 @@ mysql> create user 'springuser'@'%' identified by 'ThePassword'; -- Creates the 
 mysql> grant all on db_example.* to 'springuser'@'%'; -- Gives all privileges to the new user on the newly created database
 </pre>
 
-### 05 - relational-data-access
+### 05 - Accessing Relational Data using JDBC with Spring
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
 - Refer to https://spring.io/guides/gs/relational-data-access/ if you are interested on more information about this example.
+- <strong>Project source:</strong> relational-data-access.
+
+<strong>Introduction</strong>
+
 - This example demonstrates the process of accessing relational data with Spring.
 - You will build an application that uses Spring’s JdbcTemplate to access data stored in a relational database.
 - The project is a spring-boot project with the dependencies JDBC API and H2 Database.
@@ -1310,6 +1315,8 @@ public class GreetingController {
 - The value of the name parameter is added to a Model object, ultimately making it accessible to the view template.
 - The implementation of the method body relies on a view technology (in this case, Thymeleaf) to perform server-side rendering of the HTML. Thymeleaf parses the greeting.html template and evaluates the th:text expression to render the value of the ${name} parameter that was set in the controller.
 
+<img align="center" width=817 height=261 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/greetinghtml.png"/>
+
 <strong>Spring Boot Devtools</strong>
 
 - A common feature of developing web applications is coding a change, restarting your application, and refreshing the browser to view the change. This entire process can eat up a lot of time. To speed up this refresh cycle, Spring Boot offers with a handy module known as spring-boot-devtools. Spring Boot Devtools:
@@ -1329,4 +1336,6 @@ public class GreetingController {
 - By default, <strong>Spring Boot serves static content from resources in the classpath at /static (or /public)</strong>. 
 - The index.html resource is special because, if it exists, it is used as a welcome page for the serving-web-content application, which means it is served up as the root resource
 	- That is, at http://localhost:8080/
+
+<img align="center" width=817 height=261 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/indexhtml.png"/>
 
