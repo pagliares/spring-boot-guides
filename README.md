@@ -1310,6 +1310,8 @@ public class GreetingController {
 - The value of the name parameter is added to a Model object, ultimately making it accessible to the view template.
 - The implementation of the method body relies on a view technology (in this case, Thymeleaf) to perform server-side rendering of the HTML. Thymeleaf parses the greeting.html template and evaluates the th:text expression to render the value of the ${name} parameter that was set in the controller.
 
+<img align="center" width=817 height=261 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/greetinghtml.png"/>
+
 <strong>Spring Boot Devtools</strong>
 
 - A common feature of developing web applications is coding a change, restarting your application, and refreshing the browser to view the change. This entire process can eat up a lot of time. To speed up this refresh cycle, Spring Boot offers with a handy module known as spring-boot-devtools. Spring Boot Devtools:
@@ -1329,4 +1331,6 @@ public class GreetingController {
 - By default, <strong>Spring Boot serves static content from resources in the classpath at /static (or /public)</strong>. 
 - The index.html resource is special because, if it exists, it is used as a welcome page for the serving-web-content application, which means it is served up as the root resource
 	- That is, at http://localhost:8080/
+
+<img align="center" width=817 height=261 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/indexhtml.png"/>
 
