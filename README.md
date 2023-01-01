@@ -1387,7 +1387,7 @@ public class Greeting {
 - The fields  id and content of the Greeting class correspond to the form fields in the greeting view and are used to capture the information from the form:
 - The implementation of the method body relies on a view technology to perform server-side rendering of the HTML by converting the view name (greeting) into a template to render. In this case, we use Thymeleaf, which parses the greeting.html template and evaluates the various template expressions to render the form.
 
-
+<img align="center" width=807 height=433 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/greetingformhtml.png"/>
 
 - The th:action="@{/greeting}" expression directs the form to POST to the /greeting endpoint, while the th:object="${greeting}" expression declares the model object to use for collecting the form data. The two form fields, expressed with th:field="{id}" and th:field="{content}", correspond to the fields in the Greeting object.
 
@@ -1395,7 +1395,7 @@ public class Greeting {
 
 - Also, the submitted data can be rendered in the result view by referring to it by name (by default, the name of the method parameter, so greeting in this case). The id is rendered in the <p th:text="'id: ' + ${greeting.id}" /> expression. Likewise, the content is rendered in the <p th:text="'content: ' + ${greeting.content}" /> expression.
 
-
+<img align="center" width=810 height=329 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/greetingresulthtml.png"/>
 
 - For clarity, this example uses two separate view templates for rendering the form and displaying the submitted data. However, you can use a single view for both purposes.
 
@@ -1419,7 +1419,6 @@ public class HandlingFormSubmissionApplication {
 - visit http://localhost:8080/greeting
 
 <img align="center" width=312 height=243 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/Form.png"/>
-
 
 - Submit an ID and message to see the results:
 
