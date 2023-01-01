@@ -198,10 +198,25 @@ public class HelloControllerIT {
 
 ## Part II - Persistence with Spring Boot
 
-### 04 - accessing-data-mysql
+### 04 - Accessing data with MySQL
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- Refer to https://spring.io/guides/gs/accessing-data-mysql/ if you are interested on more information about this example.
+- <strong>Project source:</strong> accessing-data-mysql.
+
+<strong>Introduction</strong>
+
 - This example demonstrates how to develop a Spring application that is bound to a MySQL database and is ready for production.
+- The example uses Spring Data JPA to access the database, but this is only one of many possible choices (for example, you could use plain Spring JDBC).
+- <strong>Dependencies</strong>: Spring Web, Spring Data JPA, and MySQL Driver.
+- To execute this example, you need acesss to MySQL (you can use any MySQL frontend you like: MySQL Monitor, MySQL Workbench, PHPMyAdmin, etc) in order to be able to create a database.
+- To create a new database, run the following commands at the mysql prompt:
+
+<pre>
+mysql> create database db_example; -- Creates the new database
+mysql> create user 'springuser'@'%' identified by 'ThePassword'; -- Creates the user
+mysql> grant all on db_example.* to 'springuser'@'%'; -- Gives all privileges to the new user on the newly created database
+</pre>
 
 ### 05 - relational-data-access
 
