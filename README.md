@@ -1339,3 +1339,91 @@ public class GreetingController {
 
 <img align="center" width=817 height=261 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/indexhtml.png"/>
 
+### 15 - Handling Form Submission
+
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- <strong>Project source:</strong> handling-form-submission
+- Refer to https://spring.io/guides/gs/handling-form-submission if you are interested on more information about this example.
+
+<strong>Introduction</strong>
+
+- This example walks you through the process of using Spring to create and submit a web form.
+- In this guide, you will build a web form, which will be accessible at the following URL: http://localhost:8080/greeting
+- Dependencies and select Spring Web and Thymeleaf.
+
+<strong>Web Controller</strong>
+
+<pre>
+@Controller
+public class GreetingController {
+
+  @GetMapping("/greeting")
+  public String greetingForm(Model model) {
+    model.addAttribute("greeting", new Greeting());
+    return "greeting";
+  }
+
+  @PostMapping("/greeting")
+  public String greetingSubmit(@ModelAttribute Greeting greeting, Model model) {
+    model.addAttribute("greeting", greeting);
+    return "result";
+  }
+}
+</pre>
+
+- The two methods in this controller are both mapped to /greeting. You can use @RequestMapping (which, by default, maps all HTTP operations, such as GET, POST, and so forth). However, in this case, the greetingForm() method is specifically mapped to GET by using @GetMapping, while greetingSubmit() is mapped to POST with @PostMapping. This mapping lets the controller differentiate the requests to the /greeting endpoint.
+- The greetingForm() method uses a Model object to expose a new Greeting to the view template.
+
+<pre>
+public class Greeting {
+
+  private long id;
+  private String content;
+  
+  … // Getters and Setters omitted
+}
+</pre>
+
+- The fields  id and content of the Greeting class correspond to the form fields in the greeting view and are used to capture the information from the form:
+- The implementation of the method body relies on a view technology to perform server-side rendering of the HTML by converting the view name (greeting) into a template to render. In this case, we use Thymeleaf, which parses the greeting.html template and evaluates the various template expressions to render the form.
+
+
+
+- The th:action="@{/greeting}" expression directs the form to POST to the /greeting endpoint, while the th:object="${greeting}" expression declares the model object to use for collecting the form data. The two form fields, expressed with th:field="{id}" and th:field="{content}", correspond to the fields in the Greeting object.
+
+- the form submits to the /greeting endpoint by using a POST call. The greetingSubmit() method receives the Greeting object that was populated by the form. The Greeting is a @ModelAttribute, so it is bound to the incoming form content. 
+
+- Also, the submitted data can be rendered in the result view by referring to it by name (by default, the name of the method parameter, so greeting in this case). The id is rendered in the <p th:text="'id: ' + ${greeting.id}" /> expression. Likewise, the content is rendered in the <p th:text="'content: ' + ${greeting.content}" /> expression.
+
+
+
+- For clarity, this example uses two separate view templates for rendering the form and displaying the submitted data. However, you can use a single view for both purposes.
+
+<strong>Make the Application Executable</strong>
+
+- Although you can package this service as a traditional WAR file for deployment to an external application server, the simpler approach is to create a standalone application. You package everything in a single, executable JAR file, driven by a good old Java main() method. Along the way, you use Spring’s support for embedding the Tomcat servlet container as the HTTP runtime, instead of deploying to an external instance.
+
+<pre>
+@SpringBootApplication
+public class HandlingFormSubmissionApplication {
+
+  public static void main(String[] args) {
+    SpringApplication.run(HandlingFormSubmissionApplication.class, args);
+  }
+
+}
+</pre>
+
+<strong>Test the service</strong>
+
+- visit http://localhost:8080/greeting
+
+<img align="center" width=312 height=243 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/Form.png"/>
+
+
+- Submit an ID and message to see the results:
+
+<img align="center" width=326 height=235 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/Form_Result.png"/>
+
+
+
