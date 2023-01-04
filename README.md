@@ -22,8 +22,8 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 </a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#15---handling-form-submission">15 - Handling Form Submission
 </a></p>
-<p><a href="https://github.com/pagliares/spring-boot-guides#16---validating-form-input">16 - Validating Form Input
-</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#16---validating-form-input">16 - Validating Form Input</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#17---uploading-files">17 - Uploading files</a></p>
 
 
 ## Part I - First steps with Spring Boot
