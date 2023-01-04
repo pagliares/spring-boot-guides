@@ -1649,6 +1649,8 @@ public interface StorageService {
 
 - The following Thymeleaf template shows an example of how to upload files and show what has been uploaded:
 
+<img align="center" width=688 height=523 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/HTML_Template_Uploading_Files.png"/>
+
 
 - This template has three parts:
    - An optional message at the top where Spring MVC writes a <strong>flash-scoped message</strong>.
