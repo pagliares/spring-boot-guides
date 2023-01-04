@@ -22,6 +22,8 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 </a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#15---handling-form-submission">15 - Handling Form Submission
 </a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#16---validating-form-input">16 - Validating Form Input
+</a></p>
 
 
 ## Part I - First steps with Spring Boot
@@ -1425,5 +1427,126 @@ public class Greeting {
 
 <img align="center" width=326 height=235 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/Form_Result.png"/>
 
+### 16 - Validating Form Input
 
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- <strong>Project source:</strong> validating-form-input
+- Refer to https://spring.io/guides/gs/validating-form-input if you are interested on more information about this example.
+
+<strong>Introduction</strong>
+
+- This example walks you through the process of configuring a web application form to support validation.
+- You will build a simple <strong>Spring MVC application</strong> that takes user input and checks the input by using standard validation annotations.
+- You will also see how to display the <strong>error message</strong> on the screen so that the user can re-enter input to make it be valid.
+- Dependencies: Spring Web, Thymeleaf, and Validation.
+
+<strong>PersonForm Object</strong>
+
+- The application involves validating a user’s name and age, so you first need a class that backs the form used to create a person.
+
+<pre>
+public class PersonForm {
+
+   <strong>@NotNull</strong>
+   <strong>@Size(min=2, max=30)</strong>
+   private String name;
+
+   <strong>@NotNull</strong>
+   <strong>@Min(18)</strong>
+   private Integer age;
+
+   … // Getters and setters omitted
+
+   public String toString() {
+	return "Person(Name: " + this.name + ", Age: " + this.age + ")";
+   }
+}
+</pre>
+
+- <strong>@Size(min=2, max=30)</strong>: Allows names between 2 and 30 characters long.
+- <strong>@NotNull</strong>: Does not allow a null value, which is what Spring MVC generates if the entry is empty.
+- <strong>@Min(18)</strong>: Does not allow the age to be less than 18.
+
+<strong>Web Controller</strong>
+
+<pre>
+<strong>@Controller</strong>
+public class WebController <strong>implements WebMvcConfigurer</strong> {
+
+   <strong>@Override
+   public void addViewControllers(ViewControllerRegistry registry) {
+	registry.addViewController("/results").setViewName("results");
+   }</strong>
+
+   @GetMapping("/")
+   public String showForm(PersonForm personForm) {
+	return "form";
+   }
+
+   @PostMapping("/")
+   public String checkPersonInfo(<strong>@Valid PersonForm personForm, BindingResult bindingResult</strong>) {
+
+	if (<strong>bindingResult.hasErrors()</strong>) {
+		return "form";
+	}
+
+	return "<strong>redirect:/results</strong>";
+   }
+}
+</pre>
+
+- This controller has a GET method and a POST method. Both methods are mapped to /.
+
+- The <strong>showForm method</strong> returns the form template. It includes a PersonForm in its method signature so that the template can associate form attributes with a PersonForm.
+- The <strong>checkPersonInfo method</strong> accepts two arguments:
+    - A <strong>personForm object</strong> marked with <strong>@Valid</strong> to gather the attributes filled out in the form.
+    - A <strong>bindingResult object</strong> so that you can test for and retrieve validation errors.
+- You can retrieve all the attributes from the form, which is bound to the <strong>PersonForm object</strong>. 
+- In the code, you test for errors. If you encounter an error, you can send the user back to the original form template. In that situation, all the error attributes are displayed.
+- If all of the person’s attribute are valid, it redirects the browser to the final results template.
+
+<strong>HTML Front End</strong>
+
+<img align="center" width=688 height=523 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/Form_Validating_Form_input.png"/>
+
+- The form is geared to post to /
+- It is marked as being backed up by the <strong>personForm object</strong> that you saw in the GET method in the web controller. This is known as a <strong>“bean-backed form”</strong>.
+- There are two fields in the <strong>PersonForm bean</strong>, and you can see that they are tagged with <strong>th:field="*{name}" and th:field="*{age}"</strong>. 
+- Next to each field is an element that is used to show any validation errors.
+- In general, if the user enters a name or age that violates the <strong>@Valid constraints</strong>, it bounces back to this page with the error message displayed. If a valid name and age is entered, the user is routed to the next web page.
+
+<strong>Run the application</strong>
+
+@SpringBootApplication
+public class ValidatingFormInputApplication {
+
+	public static void main(String[] args) throws Exception {
+		SpringApplication.run(ValidatingFormInputApplication.class, args);
+	}
+}
+
+- To activate Spring MVC, you would normally add <strong>@EnableWebMvc to the Application class</strong>. 
+- But Spring Boot’s <strong>@SpringBootApplication</strong> already adds this annotation when it detects <strong>spring-webmvc</strong> on your classpath. This same annotation lets it find the annotated <strong>@Controller</strong> class and its methods.
+- The Thymeleaf configuration is also taken care of by @SpringBootApplication. By default, templates are located in the classpath under <strong>templates/</strong> and are resolved as views by stripping the '.html' suffix off the file name. 
+
+<strong>Testing the application</strong>
+
+- If you visit http://localhost:8080/, you should see something like the following image:
+
+<img align="center" width=524 height=300 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/valid-01.png"/>
+
+- The following pair of images show what happens if you enter N for the name and 15 for your age and click on Submit:
+
+<img align="center" width=524 height=300 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/valid-02.png"/>
+
+<img align="center" width=524 height=300 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/valid-03.png"/>
+
+- The preceding images show that, because the values violated the constraints in the PersonForm class, you get bounced back to the “main” page. 
+- Note that, if you click on Submit with nothing in the entry box, you get a different error, as the following image shows:
+
+<img align="center" width=524 height=300 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/valid-04.png"/>
+
+- If you enter a valid name and age, you end up on the results page, as the following image shows:
+
+<img align="center" width=524 height=300 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/valid-05.png"/>
 
