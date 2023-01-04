@@ -1550,3 +1550,197 @@ public class ValidatingFormInputApplication {
 
 <img align="center" width=524 height=300 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/valid-05.png"/>
 
+### 17 - Uploading Files
+
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- <strong>Project source:</strong> uploading-files
+- Refer to https://spring.io/guides/gs/uploading-files if you are interested on more information about this example.
+
+<strong>Introduction</strong>
+
+- This example walks you through the process of creating a server application that  handle file uploads by receiving <strong>HTTP multi-part file uploads</strong>.
+- The example also build a simple HTML interface to upload a test file.
+- <strong>Dependencies</strong>: Spring Web and Thymeleaf.
+
+<strong>Application class</strong>
+
+- To upload files with Servlet containers, you need to register a <strong>MultipartConfigElement class</strong> (which would be <multipart-config> in web.xml).
+- As part of <strong>auto-configuring Spring MVC</strong>, Spring Boot will create a MultipartConfigElement bean and make itself ready for file uploads.
+
+<strong>File upload controller</strong>
+
+<pre>
+@Controller
+public class FileUploadController {
+
+	private final <strong>StorageService storageService</strong>;
+
+	@Autowired
+	public FileUploadController(StorageService storageService) {
+		this.storageService = storageService;
+	}
+
+	@GetMapping("/")
+	public String listUploadedFiles(<strong>Model model</strong>) throws IOException {
+
+		<strong>model.addAttribute("files", storageService.loadAll().map(
+				path -> MvcUriComponentsBuilder.fromMethodName(FileUploadController.class,
+						"serveFile", path.getFileName().toString()).build().toUri().toString())
+				.collect(Collectors.toList()));</strong>
+
+		return "uploadForm";
+	}
+
+	@GetMapping("/files/{filename:.+}")
+	<strong>@ResponseBody</strong>
+	public <strong>ResponseEntity<Resource></strong> serveFile(<strong>@PathVariable</strong> String filename) {
+
+		<strong>Resource file = storageService.loadAsResource(filename);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+				"attachment; filename=\"" + file.getFilename() + "\"").body(file);</strong>
+	}
+
+	@PostMapping("/")
+	public String handleFileUpload(@RequestParam("file") <strong>MultipartFile file</strong>,
+			<strong>RedirectAttributes redirectAttributes</strong>) {
+
+		storageService.store(file);
+		<strong>redirectAttributes.addFlashAttribute("message",
+				"You successfully uploaded " + file.getOriginalFilename() + "!");</strong>
+
+		return "redirect:/";
+	}
+
+	<strong>@ExceptionHandler(StorageFileNotFoundException.class)</strong>
+	public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
+		return <strong>ResponseEntity.notFound().build()</strong>;
+	}
+}
+</pre>
+
+- The <strong>FileUploadController class</strong> is annotated with <strong>@Controller</strong> so that Spring MVC can pick it up and look for routes.
+- Each method is tagged with @GetMapping or @PostMapping to tie the path and the HTTP action to a particular controller action.
+- <strong>GET /</strong>: Looks up the current list of uploaded files from the StorageService and loads it into a Thymeleaf template. It calculates a link to the actual resource by using <strong>MvcUriComponentsBuilder</strong>.
+- <strong>GET /files/{filename}</strong>: Loads the resource (if it exists) and sends it to the browser to download by using a <strong>Content-Disposition response header</strong>.
+- <strong>POST /</strong>: Handles a <strong>multi-part message file</strong> and gives it to the StorageService for saving.
+- In a production scenario, you more likely would store the files in a temporary location, a database, or perhaps a NoSQL store (such as Mongo’s GridFS). <strong>It is best to NOT load up the file system of your application with content</strong>.
+
+<strong>Storage service</strong>
+
+<pre>
+public interface StorageService {
+
+   void init();
+
+   void store(<strong>MultipartFile file</strong>);
+
+   <strong>Stream<Path></strong> loadAll();
+
+   <strong>Path</strong> load(String filename);
+
+   <strong>Resource</strong> loadAsResource(String filename);
+
+   void deleteAll();
+
+}
+</pre>
+
+<strong>HTML template</strong>
+
+- The following Thymeleaf template shows an example of how to upload files and show what has been uploaded:
+
+
+- This template has three parts:
+   - An optional message at the top where Spring MVC writes a <strong>flash-scoped message</strong>.
+   - A form that lets the user upload files.
+   - A list of files supplied from the backend.
+
+<strong>Tuning File Upload Limits</strong>
+
+- When configuring file uploads, it is often useful to set limits on the size of files. Imagine trying to handle a 5GB file upload! With Spring Boot, we can tune its auto-configured MultipartConfigElement with some property settings.
+- Add the following properties to your existing properties settings (in <strong>src/main/resources/application.properties</strong>):
+
+<pre>
+spring.servlet.multipart.max-file-size=128KB
+spring.servlet.multipart.max-request-size=128KB
+</pre>
+
+- The multipart settings are constrained as follows:
+   - <strong>spring.servlet.multipart.max-file-size</strong> is set to 128KB, meaning total file size cannot exceed 128KB.
+   - <strong>spring.servlet.multipart.max-request-size</strong> is set to 128KB, meaning total request size for a multipart/form-data cannot exceed 128KB.
+
+<strong>Run the application</strong>
+
+- You want a target folder to which to upload files, so you need to enhance the basic <strong>UploadingFilesApplication class</strong> that Spring Initializr created and add a Boot <strong>CommandLineRunner</strong> to delete and re-create that folder at startup. 
+
+<pre>
+@SpringBootApplication
+<strong>@EnableConfigurationProperties(StorageProperties.class)</strong>
+public class UploadingFilesApplication {
+   ...
+   ...
+	
+   @Bean
+   CommandLineRunner init(StorageService storageService) {
+	<strong>return (args) -> {
+	   storageService.deleteAll();
+	   storageService.init();</strong>
+	};
+   }
+}
+</pre>
+
+<strong>Testing the application</strong>
+
+- With the server running, you need to open a browser and visit http://localhost:8080/ to see the upload form. 
+- Pick a (small) file and press Upload. You should see the success page from the controller. If you choose a file that is too large, you will get an ugly error page.
+- You should then see a line resembling the following in your browser window: <strong>“You successfully uploaded <name of your file>!”</strong>
+
+<strong>Automated testing</strong>
+
+<pre>
+<strong>@AutoConfigureMockMvc
+@SpringBootTest</strong>
+public class FileUploadTests {
+
+   @Autowired
+   private <strong>MockMvc</strong> mvc;
+
+   <strong>@MockBean</strong>
+   private StorageService storageService;
+
+   <strong>@Test</strong>
+   public void shouldListAllFiles() throws Exception {
+	<strong>given(this.storageService.loadAll())
+			.willReturn(Stream.of(Paths.get("first.txt"), Paths.get("second.txt")));
+
+	this.mvc.perform(get("/")).andExpect(status().isOk())
+				.andExpect(model().attribute("files",
+						Matchers.contains("http://localhost/files/first.txt",
+								"http://localhost/files/second.txt")));</strong>
+   }
+
+   <strong>@Test</strong>
+   public void shouldSaveUploadedFile() throws Exception {
+	<strong>MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+				"text/plain", "Spring Framework".getBytes());
+	this.mvc.perform(multipart("/").file(multipartFile))
+				.andExpect(status().isFound())
+				.andExpect(header().string("Location", "/"));
+
+	then(this.storageService).should().store(multipartFile);</strong>
+   }
+
+   @SuppressWarnings("unchecked")
+   <strong>@Test</strong>
+   public void should404WhenMissingFile() throws Exception {
+	<strong>given(this.storageService.loadAsResource("test.txt"))
+			.willThrow(StorageFileNotFoundException.class);
+
+	this.mvc.perform(get("/files/test.txt")).andExpect(status().isNotFound());</strong>
+	}
+}
+</pre>
+
+- In those tests, you use various <strong>mocks</strong> to set up the interactions with your controller and the StorageService but also with the Servlet container itself by using <strong>MockMultipartFile</strong>.
+- For an example of an integration test, see the <strong>FileUploadIntegrationTests class</strong> (which is in src/test/java/com/example/uploadingfiles).
