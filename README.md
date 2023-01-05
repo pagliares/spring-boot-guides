@@ -1746,3 +1746,183 @@ public class FileUploadTests {
 
 - In those tests, you use various <strong>mocks</strong> to set up the interactions with your controller and the StorageService but also with the Servlet container itself by using <strong>MockMultipartFile</strong>.
 - For an example of an integration test, see the <strong>FileUploadIntegrationTests class</strong> (which is in src/test/java/com/example/uploadingfiles).
+
+
+### 18 - Testing the Web Layer
+
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- <strong>Project source:</strong> testing-web
+- Refer to https://spring.io/guides/gs/testing-web/ if you are interested on more information about this example.
+
+<strong>Introduction</strong>
+
+- This example walks you through the process of creating a Spring application and then testing it with JUnit and Spring MockMvc. 
+- The example also demonstrates how to isolate the web layer and load a special application context.
+- <strong>Dependencies</strong>: Spring Web.
+
+<strong>Home Controller</strong>
+
+<pre>
+<strong>@Controller</strong>
+public class HomeController {
+
+	<strong>@RequestMapping("/")</strong>
+	public @ResponseBody String greeting() {
+		return "Hello, World";
+	}
+}
+</pre>
+
+<strong>Test the application</strong>
+
+- Loading the home page at http://localhost:8080 will work, however, to give yourself more confidence that the application works when you make changes, you want to automate the testing.
+- For example, below is a simple <strong>sanity check test</strong> that will fail if the application context cannot start.
+
+<pre>
+<strong>@SpringBootTest</strong>
+public class TestingWebApplicationTests {
+
+	<strong>@Test</strong>
+	public void contextLoads() {
+	}
+}
+</pre>
+
+- The <strong>@SpringBootTest annotation</strong> tells Spring Boot to look for a <strong>main configuration class</strong> (one with <strong>@SpringBootApplication</strong>, for instance) and use that to start a <strong>Spring application context</strong>. 
+- You can run this test in your IDE or on the command line (by running <strong>./mvnw test</strong> or <strong>./gradlew test</strong>), and it should pass. 
+- To convince yourself that the context is creating your controller, you could add an assertion, as the following example
+
+<pre>
+@SpringBootTest
+public class SmokeTest {
+
+	<strong>@Autowired</strong>
+	private HomeController controller;
+
+	<strong>@Test</strong>
+	public void contextLoads() throws Exception {
+		<strong>assertThat(controller).isNotNull();</strong>
+	}
+}
+</pre>
+
+- Spring interprets the <strong>@Autowired annotation</strong>, and the <strong>controller is injected before the test methods are run</strong>. 
+- We use <strong>AssertJ (which provides assertThat() and other methods)</strong> to express the test assertions.
+- A nice feature of the Spring Test support is that the <strong>application context is cached between tests</strong>. That way, if you have multiple methods in a test case or multiple test cases with the same configuration, they incur the cost of starting the application only once.
+- It is nice to have a <strong>sanity check</strong>, but you should also write some tests that assert the behavior of your application. To do that, you could start the application and listen for a connection (as it would do in production) and then send an HTTP request and assert the response as the following example:
+
+<pre>
+<strong>@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)</strong>
+public class HttpRequestTest {
+
+	<strong>@Value(value="${local.server.port}")</strong>
+	private int port;
+
+	@Autowired
+	private <strong>TestRestTemplate restTemplate</strong>;
+
+	@Test
+	public void greetingShouldReturnDefaultMessage() throws Exception {
+		<strong>assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/",
+				String.class)).contains("Hello, World");</strong>
+	}
+}
+</pre>
+
+- Note the use of <strong>webEnvironment=RANDOM_PORT to start the server with a random port</strong> (useful to avoid conflicts in test environments) and the <strong>injection of the port with @LocalServerPort</strong>. 
+- Also, note that Spring Boot has automatically provided a <strong>TestRestTemplate</strong> for you. All you have to do is add @Autowired to it.
+- Another useful approach is to <strong>not start the server at all but to test only the layer</strong> below that, where Spring handles the incoming HTTP request and hands it off to your controller. 
+	- That way, almost of the full stack is used, and your code will be called in exactly the same way as if it were processing a real HTTP request but without the cost of starting the server. 
+	- To do that, use <strong>Spring’s MockMvc</strong> and ask for that to be injected for you by using the <strong>@AutoConfigureMockMvc</strong> annotation on the test case as in the following example:
+
+<pre>
+@SpringBootTest
+<strong>@AutoConfigureMockMvc</strong>
+public class TestingWebApplicationTest {
+
+	@Autowired
+	private <strong>MockMvc mockMvc</strong>;
+
+	@Test
+	public void shouldReturnDefaultMessage() throws Exception {
+		<strong>this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())
+				.andExpect(content().string(containsString("Hello, World")));</strong>
+	}
+}
+</pre>
+
+- In this test, the <strong>full Spring application context is started</strong> but without the server. 
+- We can narrow the tests to only the <strong>web layer</strong> by using <strong>@WebMvcTest</strong>, as the following
+
+<pre>
+<strong>@WebMvcTest</strong>
+public class WebLayerTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	@Test
+	public void shouldReturnDefaultMessage() throws Exception {
+		<strong>this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())
+				.andExpect(content().string(containsString("Hello, World")));</strong>
+	}
+}
+</pre>
+
+- The test assertion is the same as in the previous case. However, in this test, <strong>Spring Boot instantiates only the web layer rather than the whole context</strong>. 
+- In an application with <strong>multiple controllers</strong>, you can even ask for <strong>only one to be instantiated by using, for example, @WebMvcTest(HomeController.class)</strong>.
+- So far, our <strong>HomeController</strong> is simple and has no dependencies. We could make it more realistic by introducing an extra component to store the greeting (perhaps in a new controller), as in the following example:
+
+<pre>
+<strong>@Controller</strong>
+public class GreetingController {
+
+	private <strong>final GreetingService service</strong>;
+
+	public GreetingController(GreetingService service) {
+		this.service = service;
+	}
+
+	<strong>@RequestMapping("/greeting")</strong>
+	public <strong>@ResponseBody </strong> String greeting() {
+		return service.greet();
+	}
+}
+</pre?
+
+- Then create a greeting service, as the following listing:
+
+<pre>
+<strong>@Service</strong>
+public class GreetingService {
+	public String greet() {
+		return "Hello, World";
+	}
+}
+</pre>
+
+- <strong>Spring automatically injects the service dependency into the controller</strong> (because of the constructor signature).
+
+- to test this controller with <strong>@WebMvcTest</strong>:
+
+<pre>
+<strong>@WebMvcTest(GreetingController.class)</strong>
+public class WebMockTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	<strong>@MockBean</strong>
+	private GreetingService service;
+
+	@Test
+	public void greetingShouldReturnMessageFromService() throws Exception {
+		<strong>when(service.greet()).thenReturn("Hello, Mock");
+		this.mockMvc.perform(get("/greeting")).andDo(print()).andExpect(status().isOk())
+				.andExpect(content().string(containsString("Hello, Mock")));</strong>
+	}
+}
+</pre>
+
+- We use <strong>@MockBean to create and inject a mock for the GreetingService</strong> (if you do not do so, the application context cannot start), and we set its expectations using <strong>Mockito</strong>.
+
