@@ -6,7 +6,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 
 <p><a href="https://github.com/pagliares/spring-boot-guides#01---demo">01 - Spring Quickstart Guide</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#02---command-line-spring-boot">02 - command-line-spring-boot</a></p>
-<p><a href="https://github.com/pagliares/spring-boot-guides#03---spring-boot">03 - spring-boot</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#03---spring-boot">03 - Building an Application with Spring Boot</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#04---accessing-data-mysql">04 - accessing-data-mysql</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#05---relational-data-access">05 - Accessing Relational Data using JDBC with Spring
 </a></p>
@@ -39,17 +39,15 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <strong>Introduction</strong>
 
 - This first Spring Boot was generated with aid of Spring Initializer (https://start.spring.io/) by selecting Maven as build tool, Spring Boot 3.0.0, jar packaging, Java 17, and with the Spring Web Dependency. 
-
 - In the example we program a classic “Hello World!” endpoint (RESTful) that can be accessed from any browser. 
 - The example also illustrates how to pass parameters to the server via URL (query string).
 - The parameter is used to produce the output view shown in the web browser.  
 - To execute the example:
    - ./mvnw spring-boot:run (GNU/Linux)
    - mvnw spring-boot:run (Windows)
-
 - To test the example:
-   - <p>http://localhost:8080/hello (outputs Hello World!)</p>
-   - <p>http://localhost:8080/hello<strong>?name=Pagliares</strong> (outputs Hello Pagliares! )</p>
+   - http://localhost:8080/hello (outputs Hello World!)
+   - http://localhost:8080/hello<strong>?name=Pagliares</strong> (outputs Hello Pagliares!)
 
 <pre>
 <strong>@SpringBootApplication</strong>
@@ -75,7 +73,6 @@ public class DemoApplication {
 - This example project was created with Spring Initializr without explicitly adding any dependencies
 
 <p align="center"> <img src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/Command_Line_Runner.png" width=795 height="493" alt="Spring initializr printscreen" title="Spring initializr"></p>
-
 
 - CommandLineRunner is an interface used to indicate that a bean should run when it is contained within a SpringApplication. 
 - The overriden run() method of the CommandLineRunner will be executed after the application starts.
@@ -104,12 +101,16 @@ public class CommandLineSpringBootApplication <strong>implements CommandLineRunn
 		}
 	}
 }
-
 </pre>
 
-### 03 - spring-boot 
+### 03 - Building an Application with Spring Boot
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- <strong>Project source:</strong> securing-web
+- Refer to https://spring.io/guides/gs/spring-boot/ if you are interested on more information about this example.
+
+<strong>Introduction</strong>
+
 - This example builds a simple web application with Spring Boot and add some useful monitoring services to it.
 - The project can be created by visiting Spring Initializr, filling in your project details, picking your options, and downloading a bundled up project as a zip file. I added the Spring Web Dependency.
 - If your IDE has the Spring Initializr integration, you can complete this process from your IDE.
@@ -129,28 +130,26 @@ public class CommandLineSpringBootApplication <strong>implements CommandLineRunn
 @SpringBootApplication
 public class Application {
 
-	public static void main(String[] args) {
+   public static void main(String[] args) {
 		
-		SpringApplication.run(Application.class, args);
-	}
-
+	SpringApplication.run(Application.class, args);
+   }
 }
 
- 
 <strong>@Bean</strong>
-	public <strong>CommandLineRunner</strong> commandLineRunner(ApplicationContext ctx) {
-		return args -> {
+public <strong>CommandLineRunner</strong> commandLineRunner(ApplicationContext ctx) {
+   return args -> {
 
-			System.out.println("Let's inspect the beans provided by Spring Boot:");
+	System.out.println("Let's inspect the beans provided by Spring Boot:");
 
-			String[] beanNames = ctx.getBeanDefinitionNames();
-			Arrays.sort(beanNames);
-			for (String beanName : beanNames) {
-				System.out.println(beanName);
-			}
-
-		};
+	String[] beanNames = ctx.getBeanDefinitionNames();
+	Arrays.sort(beanNames);
+	for (String beanName : beanNames) {
+	   System.out.println(beanName);
 	}
+
+   };
+}
  </pre>
 
 - The CommandLineRunner method marked as a @Bean runs on start up. It retrieves all the beans that were created by your application or that were automatically added by Spring Boot. It sorts them and prints them out (Notice that the helloController we created is on the list) 
