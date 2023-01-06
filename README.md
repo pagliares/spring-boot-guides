@@ -25,6 +25,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#16---validating-form-input">16 - Validating Form Input</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#17---uploading-files">17 - Uploading Files</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#18---testing-the-web-layer">18 - Testing the Web Layer</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#19---securing-a-web-application">19 - Securing a Web Application</a></p>
 
 
 ## Part I - First steps with Spring Boot
@@ -1976,25 +1977,8 @@ public class MvcConfig implements WebMvcConfigurer {
 	-  However, you can further customize the security settings.
 - With <strong>Apache Maven</strong>, you need to add two extra entries (one for the application and one for testing):
 
-<pre>
-   <dependency>
-	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-starter-security</artifactId>
-   </dependency>
-	
-   <dependency>
-	<groupId>org.thymeleaf.extras</groupId>
-	<artifactId>thymeleaf-extras-springsecurity6</artifactId>
-	<!-- Temporary explicit version to fix Thymeleaf bug -->
-	<version>3.1.1.RELEASE</version>
-    </dependency>
+<img align="center" width=603 height=313 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-maven.png"/>
 
-    <dependency>
-	<groupId>org.springframework.security</groupId>
-	<artifactId>spring-security-test</artifactId>
-	<scope>test</scope>
-    </dependency>
-</pre>
 
 - The following <strong>security configuration</strong> ensures that only <strong>authenticated users</strong> can see the secret greeting:
 
@@ -2046,6 +2030,11 @@ public class WebSecurityConfig {
 <img align="center" width=865 height=461 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-html-3.png"/>
 
 - If the user <strong>fails to authenticate</strong>, the page is redirected to <strong>/login?error</strong>, and your page displays the appropriate error message. 
+
+<img align="center" width=525 height=137 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-wrong-user.png"/>
+
+<img align="center" width=518 height=163 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-failed-authentication.png"/>
+
 - Upon <strong>successfully signing out</strong>, your application is sent to <strong>/login?logout</strong>, and your page displays the appropriate success message.
 - To display the <strong>current user name and sign out</strong>, update the <strong>hello.html</strong> to say hello to the current user and contain a Sign Out form:
 
@@ -2063,10 +2052,12 @@ public class WebSecurityConfig {
 
 - When you click on the link, it attempts to take you to the greeting page at <strong>/hello</strong>. However, because that page is secured and you have not yet logged in, it takes you to the <strong>login page</strong>, as the following image shows:
 
-
 <img align="center" width=520 height=143 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-form.png"/>
 
 - At the <strong>login page</strong>, sign in as the test user by entering <strong>user and password for the username and password fields</strong>, respectively. 
+
+<img align="center" width=516 height=138 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-valid-user.png"/>
+
 - Once you <strong>submit the login form</strong>, you are authenticated and then taken to the <strong>greeting page</strong>, as the following image shows:
 
 <img align="center" width=493 height=177 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-successful-authentication.png"/>
