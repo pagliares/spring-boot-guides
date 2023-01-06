@@ -1927,3 +1927,153 @@ public class WebMockTest {
 
 - We use <strong>@MockBean to create and inject a mock for the GreetingService</strong> (if you do not do so, the application context cannot start), and we set its expectations using <strong>Mockito</strong>.
 
+### 19 - Securing a web application
+
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- <strong>Project source:</strong> securing-web
+- Refer to https://spring.io/guides/gs/securing-web/ if you are interested on more information about this example.
+
+<strong>Introduction</strong>
+
+- This example walks you through the process of creating a simple web application with resources that are protected by <strong>Spring Security</strong>.
+- The example shows a Spring MVC application that secures the page with a login form.
+- <strong>Dependencies</strong>: Spring Web and Thymeleaf.
+
+<strong>An Unsecured Web Application</strong>
+
+- Initially, the example demonstrates a web application includes two simple views: a <strong>home page</strong> and a <strong>“Hello, World” page</strong>. 
+- The <strong>home page</strong> is defined in the following <strong>Thymeleaf template</strong>:
+
+<img align="center" width=785 height=252 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-html-1.png"/>
+
+- This simple view includes a link to the <strong>/hello page</strong>, which is defined in the following <strong>Thymeleaf template</strong>:
+
+<img align="center" width=789 height=205 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-html-2.png"/>
+
+- The web application is based on Spring MVC. As a result, you need to configure Spring MVC and set up view controllers to expose these templates as the following example:
+
+<pre>
+@Configuration
+public class MvcConfig implements WebMvcConfigurer {
+
+   public void addViewControllers(ViewControllerRegistry registry) {
+	registry.addViewController("/home").setViewName("home");
+	registry.addViewController("/").setViewName("home");
+	registry.addViewController("/hello").setViewName("hello");
+	registry.addViewController("/login").setViewName("login");
+   }
+}
+</pre>
+
+- The <strong>addViewControllers()</strong> method (which overrides the method of the same name in <strong>WebMvcConfigurer</strong>) adds four view controllers.
+
+<strong>Set up Spring Security</strong>
+
+- Suppose that you want to prevent unauthorized users from viewing the greeting page at <strong>/hello</strong>.
+- You need to add a barrier that forces the visitor to sign in before they can see that page.
+	- You do that by configuring <strong>Spring Security</strong> in the application.
+- If <strong>Spring Security is on the classpath</strong>, Spring Boot automatically secures all <strong>HTTP endpoints with “basic” authentication</strong>. 
+	-  However, you can further customize the security settings.
+- With <strong>Apache Maven</strong>, you need to add two extra entries (one for the application and one for testing):
+
+<pre>
+   <dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-security</artifactId>
+   </dependency>
+	
+   <dependency>
+	<groupId>org.thymeleaf.extras</groupId>
+	<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+	<!-- Temporary explicit version to fix Thymeleaf bug -->
+	<version>3.1.1.RELEASE</version>
+    </dependency>
+
+    <dependency>
+	<groupId>org.springframework.security</groupId>
+	<artifactId>spring-security-test</artifactId>
+	<scope>test</scope>
+    </dependency>
+</pre>
+
+- The following <strong>security configuration</strong> ensures that only <strong>authenticated users</strong> can see the secret greeting:
+
+<pre>
+<strong>@Configuration
+@EnableWebSecurity</strong>
+public class WebSecurityConfig {
+
+   <strong>@Bean</strong>
+   public <strong>SecurityFilterChain securityFilterChain(HttpSecurity http)</strong> throws Exception {
+	<strong>http
+		.authorizeHttpRequests((requests) -> requests
+			.requestMatchers("/", "/home").permitAll()
+			.anyRequest().authenticated()
+		)
+		.formLogin((form) -> form
+			.loginPage("/login")
+			.permitAll()
+		)
+		.logout((logout) -> logout.permitAll());
+
+	return http.build();</strong>
+   }
+
+   <strong>@Bean</strong>
+   public <strong>UserDetailsService</strong> userDetailsService() {
+	<strong>UserDetails user =
+		User.withDefaultPasswordEncoder()
+			.username("user")
+			.password("password")
+			.roles("USER")
+			.build();
+
+	return new InMemoryUserDetailsManager(user);</strong>
+   }
+}
+</pre>
+
+- The <strong>WebSecurityConfig class</strong> is annotated with <strong>@EnableWebSecurity</strong> to enable Spring Security’s web security support and provide the Spring MVC integration.
+- It also exposes two beans to set some specifics for the web security configuration:
+   - The <strong>SecurityFilterChain bean</strong> defines which URL paths should be secured and which should not. Specifically, the <strong>/</strong> and <strong>/home</strong> paths are configured to not require any authentication. All other paths must be authenticated.
+   	- When a user successfully logs in, they are redirected to the previously requested page that required authentication. There is a <strong>custom /login page</strong> (which is specified by loginPage()), and everyone is allowed to view it.
+   - The <strong>UserDetailsService bean</strong> sets up an <strong>in-memory user store with a single user</strong>. That user is given a <strong>user name of user</strong>, a <strong>password of password</strong>, and a <strong>role of USER</strong>.
+
+<strong>Login page</strong>
+
+- The following <strong>Thymeleaf template</strong> presents a form that captures a <strong>username and password</strong> and posts them to <strong>/login:</strong>
+
+<img align="center" width=865 height=461 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-html-3.png"/>
+
+- If the user <strong>fails to authenticate</strong>, the page is redirected to <strong>/login?error</strong>, and your page displays the appropriate error message. 
+- Upon <strong>successfully signing out</strong>, your application is sent to <strong>/login?logout</strong>, and your page displays the appropriate success message.
+- To display the <strong>current user name and sign out</strong>, update the <strong>hello.html</strong> to say hello to the current user and contain a Sign Out form:
+
+<img align="center" width=780 height=317 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-html-4.png"/>
+
+- We display the username by using <strong>Thymeleaf’s integration with Spring Security</strong>. 
+- The <strong>“Sign Out” form</strong> submits a POST to <strong>/logout</strong>. 
+- Upon <strong>successfully logging out</strong>, it redirects the user to <strong>/login?logout</strong>.
+
+<strong>Run the application</strong>
+
+- Point your browser to http://localhost:8080. You should see the home page, as the following image shows:
+
+<img align="center" width=516 height=201 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-index.png"/>
+
+- When you click on the link, it attempts to take you to the greeting page at <strong>/hello</strong>. However, because that page is secured and you have not yet logged in, it takes you to the <strong>login page</strong>, as the following image shows:
+
+
+<img align="center" width=520 height=143 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-form.png"/>
+
+- At the <strong>login page</strong>, sign in as the test user by entering <strong>user and password for the username and password fields</strong>, respectively. 
+- Once you <strong>submit the login form</strong>, you are authenticated and then taken to the <strong>greeting page</strong>, as the following image shows:
+
+<img align="center" width=493 height=177 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-successful-authentication.png"/>
+
+- If you click on the <strong>Sign Out button</strong>, your authentication is revoked, and you are returned to the <strong>login page</strong> with a message indicating that you are logged out.
+
+<img align="center" width=518 height=163 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-logout.png"/>
+
+
+
