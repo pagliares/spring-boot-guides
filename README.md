@@ -26,7 +26,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#17---uploading-files">17 - Uploading Files</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#18---testing-the-web-layer">18 - Testing the Web Layer</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#19---securing-a-web-application">19 - Securing a Web Application</a></p>
-
+<p><a href="https://github.com/pagliares/spring-boot-guides#20---spring-boot-with-docker">20 - Spring Boot with Docker</a></p>
 
 ## Part I - First steps with Spring Boot
 
