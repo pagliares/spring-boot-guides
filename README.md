@@ -6,7 +6,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 
 <p><a href="https://github.com/pagliares/spring-boot-guides#01---demo">01 - Spring Quickstart Guide</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#02---command-line-spring-boot">02 - command-line-spring-boot</a></p>
-<p><a href="https://github.com/pagliares/spring-boot-guides#03---spring-boot">03 - Building an Application with Spring Boot</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#03---building-an-application-with-spring-boot">03 - Building an Application with Spring Boot</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#04---accessing-data-mysql">04 - accessing-data-mysql</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#05---relational-data-access">05 - Accessing Relational Data using JDBC with Spring
 </a></p>
@@ -106,7 +106,7 @@ public class CommandLineSpringBootApplication <strong>implements CommandLineRunn
 ### 03 - Building an Application with Spring Boot
 
 - <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
-- <strong>Project source:</strong> securing-web
+- <strong>Project source:</strong> spring-boot
 - Refer to https://spring.io/guides/gs/spring-boot/ if you are interested on more information about this example.
 
 <strong>Introduction</strong>
@@ -117,13 +117,10 @@ public class CommandLineSpringBootApplication <strong>implements CommandLineRunn
  - Spring Web allows build web, including RESTful, applications using Spring MVC. Spring web uses Apache Tomcat as the default embedded container. 
 - This example includes a web controller for a simple web application (HelloController) that outputs HelloWorld when requested from the the root of the application / 
 - URLs used in this example:
-
-	<p>http://localhost:8080/ </p>  
-	<p>http://localhost:8080/actuator/health <p>
-	<p>http://localhost:8080/actuator </p>
-
+	- http://localhost:8080/
+	- http://localhost:8080/actuator/health
+	- http://localhost:8080/actuator
 - We can use a web browser or the command-line curl utility to test our endpoints. 
-
 - This example also evolves the simple application class created by the Spring Initializr.  
 
 <pre>
@@ -164,11 +161,8 @@ public <strong>CommandLineRunner</strong> commandLineRunner(ApplicationContext c
 </dependency>
 </pre>
 
-
 - The example includes a simple unit test that mocks the servlet request and response by calling your endpoint (HelloController). We use MockMvc that comes from Spring Test and lets us send HTTP requests into the DispatcherServlet and make assertions about the result. 
-
 - Having used @SpringBootTest, we are asking for the whole application context to be created. An alternative would be to ask Spring Boot to create only the web layers of the context by using @WebMvcTest. 
-
 - The example also includes an simple full-stack integration test  
 
 <pre>
@@ -187,7 +181,6 @@ public class HelloControllerIT {
 </pre>
 
 - Finnaly, the example illustrates that we can add production grade services (management services) to our Spring Boot application to, among other things, monitor the status of our web application on production environments.
-
 - To enable management services. Add it to Maven
 
 <p><dependency>
@@ -195,9 +188,7 @@ public class HelloControllerIT {
    <artifactId>spring-boot-starter-actuator</artifactId>
 </dependency></p>
 
-
 - Accessing the management services with http://localhost:8080/actuator/health produces {"status":"UP"}
-
 - Accessing the management services with http://localhost:8080/actuator produces
 
 <p>{"_links":{"self":{"href":"http://localhost:8080/actuator","templated":false},"health-path":{"href":"http://localhost:8080/actuator/health/{*path}","templated":true},"health":{"href":"http://localhost:8080/actuator/health","templated":false}}}</p>
