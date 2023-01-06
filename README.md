@@ -1880,7 +1880,7 @@ public class GreetingController {
 		return service.greet();
 	}
 }
-</pre?
+</pre>
 
 - Then create a greeting service, as the following listing:
 
@@ -2059,4 +2059,73 @@ public class WebSecurityConfig {
 <img align="center" width=518 height=163 src="https://github.com/pagliares/spring-boot-guides/blob/main/Images/securing-web/securing-web-logout.png"/>
 
 
+## Part VI - Docker Containers
+
+### 20 - Spring Boot with Docker
+
+- <small><a href="https://github.com/pagliares/spring-boot-guides#outline">Back to Outline</a></small>
+- <strong>Project source:</strong> spring-boot-docker
+- Refer to https://spring.io/guides/gs/spring-boot-docker/ if you are interested on more information about this example.
+	- Important: The guide on this link mentions the installation of boot2docker if you are on a MacOS platform. This is not needed anymore (January, 2023).
+	- Important: The guide uses on Dockerfile the entry <strong>FROM openjdk:8-jdk-alpine</strong>. We decided to use a newer version instead (<strong>FROM eclipse-temurin:17-jdk-focal</strong>).
+
+<strong>Introduction</strong>
+
+- This example walks you through the process of <strong>building a Docker image and create a Docker container</strong> for running a Spring Boot application.
+- By default, <strong>Spring Boot applications run on port 8080 inside the container</strong>, and we mapped that to the same port on the host by using <strong>-p</strong> on the command line.
+- We start with a <strong>basic Dockerfile</strong> and make a few tweaks. Then we show a couple of options that use <strong>build plugins</strong> (for Maven and Gradle) instead of docker.
+- A <strong>Docker image</strong> is a recipe for <strong>running a containerized process</strong>.
+- <strong>Pre-requisite for this example</strong>: 
+	- <strong>Docker desktop</strong> installed: 
+		- https://docs.docker.com/get-docker/#installation
+- <strong>Dependencies</strong>: Spring Web
+
+<strong>Spring Boot Application</strong>
+
+<pre>
+@SpringBootApplication
+<strong>@RestController</strong>
+public class Application {
+
+  @RequestMapping("/")
+  public String home() {
+    return "Hello Docker World";
+  }
+
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
+}
+</pre>
+
+- The Application class is flagged as a <strong>@SpringBootApplication</strong> and as a <strong>@RestController</strong>, meaning that it is ready for use by Spring MVC to handle web requests. 
+- <strong>@RequestMapping maps / to the home() method</strong>, which sends a Hello World response. 
+
+<strong>Running the application without the Docker container</strong> (that is, in the host OS)
+
+- Go to localhost:8080 to see your “Hello Docker World” message.
+
+<strong>Containerize the application</strong>
+
+- Docker has a simple <strong>"Dockerfile" file format</strong> that it uses to <strong>specify the “layers” of an image</strong>. 
+- <strong>Example 1:</strong>
+
+<pre>
+FROM eclipse-temurin:17-jdk-focal
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
+</pre>
+
+- If you use <strong>Apache Maven</strong>, you can run it with the following command:
+
+<pre>docker build -t springio/gs-spring-boot-docker . </pre>
+
+- This command <strong>builds an image</strong> and tags it as <strong>springio/gs-spring-boot-docker</strong>.
+
+- The <strong>build creates a spring user and a spring group</strong> to run the application. 
+- It is then copied (by the <strong>COPY command</strong>) the project <strong>JAR file</strong> into the container as <strong>app.jar</strong>, which is <strong>run in the ENTRYPOINT</strong>. 
+- The array form of the <strong>Dockerfile ENTRYPOINT</strong> is used so that there is no shell wrapping the Java process.
+- <strong>Running applications with user privileges helps to mitigate some risks</strong>. 
+	- So, an <strong>important improvement to the Dockerfile</strong> is to <strong>run the application as a non-root user</strong>.
 
