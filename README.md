@@ -4,20 +4,27 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 
 ## Outline
 
+### Part I - First steps with Spring Boot
 <p><a href="https://github.com/pagliares/spring-boot-guides#01---demo">01 - Spring Quickstart Guide</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#02---command-line-spring-boot">02 - command-line-spring-boot</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#03---building-an-application-with-spring-boot">03 - Building an Application with Spring Boot</a></p>
+
+### Part II - Persistence with Spring Boot
 <p><a href="https://github.com/pagliares/spring-boot-guides#04---accessing-data-mysql">04 - accessing-data-mysql</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#05---relational-data-access">05 - Accessing Relational Data using JDBC with Spring
 </a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#06---managing-transactions">06 - managing-transactions</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#07---accessing-data-jpa">07 - accessing-data-jpa</a></p>
+
+### Part III - RESTful with Spring Boot
 <p><a href="https://github.com/pagliares/spring-boot-guides#08---accessing-data-rest">08 - accessing-data-rest</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#09---rest-service">09 - rest-service</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#10---quoters-and-consuming-rest">10 - quoters and consuming-rest</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#11---actuator-service">11 - actuator-service</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#12---rest-hateoas">12 - Building a Hypermedia-Driven RESTful Web Service</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#13---enabling-cross-origin-requests-for-a-restful-web-service-rest-service-cors">13 - Enabling Cross Origin Requests for a RESTful Web Service</a></p>
+
+### Part IV - Spring MVC
 <p><a href="https://github.com/pagliares/spring-boot-guides#14---serving-web-content-with-spring-mvc">14 - Serving Web Content with Spring MVC
 </a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#15---handling-form-submission">15 - Handling Form Submission
@@ -25,7 +32,11 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 <p><a href="https://github.com/pagliares/spring-boot-guides#16---validating-form-input">16 - Validating Form Input</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#17---uploading-files">17 - Uploading Files</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#18---testing-the-web-layer">18 - Testing the Web Layer</a></p>
+
+### Part V - Spring Security
 <p><a href="https://github.com/pagliares/spring-boot-guides#19---securing-a-web-application">19 - Securing a Web Application</a></p>
+
+### Part VI - Docker Containers
 <p><a href="https://github.com/pagliares/spring-boot-guides#20---spring-boot-with-docker">20 - Spring Boot with Docker</a></p>
 
 ## Part I - First steps with Spring Boot
