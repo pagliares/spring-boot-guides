@@ -5,7 +5,7 @@ Repository with examples illustrated at Spring Boot QuickStart Guides (https://s
 ## Outline
 
 ### Part I - First steps with Spring Boot
-<p><a href="https://github.com/pagliares/spring-boot-guides#01---demo">01 - Spring Quickstart Guide</a></p>
+<p><a href="https://github.com/pagliares/spring-boot-guides#01---spring-quickstart-guide">01 - Spring Quickstart Guide</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#02---command-line-spring-boot">02 - command-line-spring-boot</a></p>
 <p><a href="https://github.com/pagliares/spring-boot-guides#03---building-an-application-with-spring-boot">03 - Building an Application with Spring Boot</a></p>
 
