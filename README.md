@@ -181,8 +181,8 @@ public <strong>CommandLineRunner</strong> commandLineRunner(ApplicationContext c
 @SpringBootTest(<strong>webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT</strong>)
 public class HelloControllerIT {
 
-	@Autowired
-	private TestRestTemplate template;
+    @Autowired
+    private TestRestTemplate template;
 
     @Test
     public void getHello() throws Exception {
